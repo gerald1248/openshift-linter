@@ -1,12 +1,13 @@
 OpenShift Linter
 ================
 
-This is a utility for OpenShift admins who want to know if certain (very basic) rules have been followed. Admins can also specify naming conventions for namespaces and projects.
+This is a utility for OpenShift users who want to know if certain (very basic) rules have been followed. You can also specify naming conventions for namespaces and projects.
 
 As it's very early days the focus is on `deploymentConfig` objects.
 
 Usage
 -----
+```
 Usage: ./openshift-linter [<JSON file> [<JSON file>]]
   -env string
       pattern for environment variables (default "^[A-Z0-9_-]+$")
@@ -18,12 +19,21 @@ Usage: ./openshift-linter [<JSON file> [<JSON file>]]
       pattern for namespaces/projects (default "^[a-z0-9\\._-]+$")
   -p int
       listen on port (default 8000)
+```
+The two main use cases are:
+
+* You already have a bunch of configuration files (the output of `oc export dc --all-namespaces`, say, assuming you're lucky enough to be `cluster-admin`)
+```
+$ ./openshift-linter i-contain-multitudes.json`
+```
+
+* Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
 
 Build
 -----
-Install Go using one of the installers available from `https://golang.org/dl/` and set up your `$GOPATH` and `$GOBIN` as you see fit (exporting `~/golang` and `$GOPATH/bin` in your `.bash_profile` will do).
+Install Go using one of the installers available from `https://golang.org/dl/` and set up your `$GOPATH` and `$GOBIN` as you see fit (exporting `GOPATH=~/golang` and `GOBIN=$GOPATH/bin` in your `.bash_profile` will do).
 
-Now it's time to clone `github.com/gerald1248/openshift-linter`. The folder structure below `$GOPATH` should look as follows:
+Then clone `github.com/gerald1248/openshift-linter`. The folder structure below `$GOPATH` should look roughly as follows:
 ```
 src
 └── github.com
@@ -37,14 +47,14 @@ src
             └── server.go
 ```
 
-Next, install Node.js with npm using your package manager. `cd` into the working directory `timeline` and enter:
+Next, install Node.js with npm using your package manager. `cd` into the working directory `openshift-linter` and enter:
 
 ```
 $ npm install -g gulp-cli
 $ npm install
 ```
 
-Note for Ubuntu users: as `gulp-cli` currently expects `node`, but Ubuntu installs `nodejs`, `gulp` currently has to be triggered as follows:
+Note for Ubuntu users: as `gulp-cli` currently expects `node`, but Ubuntu installs `nodejs`, `gulp` has to be triggered as follows:
 
 ```
 $ nodejs node_modules/gulp/bin/gulp.js
@@ -56,7 +66,7 @@ In other words, it's very nearly the invocation to use when installing `gulp-cli
 $ node node_modules/gulp/bin/gulp.js
 ```
 
-Before running `gulp` (which builds and tests the program), fetch and install the dependencies:
+Before running `gulp` (which builds and tests the program), fetch and install the dependencies (`go get` also runs at build time, albeit without the -u switch):
 
 ```
 $ go get -u github.com/jteeuwen/go-bindata/...
