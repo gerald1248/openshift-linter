@@ -2,8 +2,12 @@
 package main
 
 type Config struct {
-	Kind  string  `json:"kind"`
-	Items []*Item `json:"items"`
+	Kind                   string  `json:"kind"`
+	Items                  []*Item `json:"items"`
+	CustomNamespacePattern string  `json:"customNamespacePattern"`
+	CustomNamePattern      string  `json:"customNamePattern"`
+	CustomContainerPattern string  `json:"customContainerPattern"`
+	CustomEnvPattern       string  `json:"customEnvPattern"`
 }
 
 type Item struct {

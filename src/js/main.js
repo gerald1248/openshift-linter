@@ -28,6 +28,24 @@ var App = function() {
       $('#report').text("Can't parse JSON data");
       return;
     }
+
+    var customNamespacePattern = $('#namespace-pattern').val();
+    var customNamePattern = $('#name-pattern').val();
+    var customContainerPattern = $('#container-pattern').val();
+    var customEnvPattern = $('#env-pattern').val();
+    if (customNamespacePattern.length > 0) {
+      obj.customNamespacePattern = customNamespacePattern;
+    }
+    if (customNamePattern.length > 0) {
+      obj.customNamePattern = customNamePattern;
+    }
+    if (customContainerPattern.length > 0) {
+      obj.customContainerPattern = customContainerPattern;
+    }
+    if (customEnvPattern.length > 0) {
+      obj.customEnvPattern = customEnvPattern;
+    }
+
     $.ajax({
       url: "/openshift-linter",
       type: "POST",
@@ -110,6 +128,10 @@ var App = function() {
     $('#port-input').val(localStorage.getItem("port"));
     $('#token-input').val(localStorage.getItem("token"));
     $('#request-input').val(localStorage.getItem("request"));
+    $('#namespace-pattern').val(localStorage.getItem("namespace-pattern"));
+    $('#name-pattern').val(localStorage.getItem("name-pattern"));
+    $('#container-pattern').val(localStorage.getItem("container-pattern"));
+    $('#env-pattern').val(localStorage.getItem("env-pattern"));
     $('#data').val(localStorage.getItem("data"));
   };
 
@@ -122,7 +144,12 @@ var App = function() {
     localStorage.setItem("port", $('#port-input').val());
     localStorage.setItem("token", $('#token-input').val());
     localStorage.setItem("request", $('#request-input').val());
+    localStorage.setItem("namespace-pattern", $('#namespace-pattern').val());
+    localStorage.setItem("name-pattern", $('#name-pattern').val());
+    localStorage.setItem("container-pattern", $('#container-pattern').val());
+    localStorage.setItem("env-pattern", $('#env-pattern').val());
     localStorage.setItem("data", $('#data').val());
+
   };
 };
 

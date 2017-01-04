@@ -9,16 +9,29 @@ import (
 	"strings"
 )
 
-func processBytes(bytes []byte, envPattern, namespacePattern, namePattern string) (CombinedResultMap, error) {
+func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern, envPattern string) (CombinedResultMap, error) {
 	var config Config
 
 	if err := json.Unmarshal(bytes, &config); err != nil {
 		return nil, errors.New(fmt.Sprintf("can't unmarshal data: %v", err))
 	}
 
-	//TODO: namespace pattern
+	//for POST req access, pick up custom settings from JSON obj
+	if config.CustomNamespacePattern != "" {
+		namespacePattern = config.CustomNamespacePattern
+	}
 
-	//TODO: name pattern
+	if config.CustomNamePattern != "" {
+		namePattern = config.CustomNamePattern
+	}
+
+	if config.CustomContainerPattern != "" {
+		containerPattern = config.CustomContainerPattern
+	}
+
+	if config.CustomEnvPattern != "" {
+		envPattern = config.CustomEnvPattern
+	}
 
 	//environment variables
 	resultEnv := make(ResultMap)
@@ -71,7 +84,45 @@ func processBytes(bytes []byte, envPattern, namespacePattern, namePattern string
 		}
 	}
 
-	//TODO: env pattern
+	//name pattern
+	resultInvalidName := make(ResultMap)
+
+	reNamespace, err := regexp.Compile(namespacePattern)
+	checkNamespace := err == nil
+
+	reName, err := regexp.Compile(namePattern)
+	checkName := err == nil
+
+	reContainer, err := regexp.Compile(containerPattern)
+	checkContainer := err == nil
+
+	for _, key := range keysEnv {
+		item := resultEnv[key]
+		for _, spec := range item {
+			if checkNamespace == true {
+				display := fmt.Sprintf("%s !~ /%s/", spec.Namespace, namespacePattern)
+				if reNamespace.FindStringIndex(spec.Namespace) == nil {
+					resultInvalidName[display] = append(resultInvalidName[display], spec)
+				}
+			}
+
+			if checkName == true {
+				display := fmt.Sprintf("%s !~ /%s/", spec.Name, namePattern)
+				if reName.FindStringIndex(spec.Name) == nil {
+					resultInvalidName[display] = append(resultInvalidName[display], spec)
+				}
+			}
+
+			if checkContainer == true {
+				display := fmt.Sprintf("%s !~ /%s/", spec.Container, containerPattern)
+				if reContainer.FindStringIndex(spec.Container) == nil {
+					resultInvalidName[display] = append(resultInvalidName[display], spec)
+				}
+			}
+		}
+	}
+
+	//env pattern
 	resultInvalidKey := make(ResultMap)
 	reEnv, err := regexp.Compile(envPattern)
 	if err == nil {
@@ -141,6 +192,7 @@ func processBytes(bytes []byte, envPattern, namespacePattern, namePattern string
 	combined := make(CombinedResultMap)
 	combined["similar_key"] = resultSimilarKey
 	combined["invalid_key"] = resultInvalidKey
+	combined["invalid_name"] = resultInvalidName
 	combined["limits"] = resultLimits
 	return combined, nil
 }

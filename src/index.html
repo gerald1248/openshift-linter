@@ -25,17 +25,51 @@
                 <tr>
                   <th>Master</th><th>Port</th><th>Request</th><th>Token</th>
                 </tr>
-                <tr>
-                  <td><input id="master-input" class="form-control" type="text" autofocus="autofocus" placeholder="https://192.168.99.100"></input></td>
-                  <td><input id="port-input" class="form-control" type="text" placeholder="8443"></input></td>
-                  <td><input id="request-input" class="form-control" type="text" placeholder="/oapi/v1/namespaces/myproject/deploymentconfigs`"></input></td>
-                  <td><input id="token-input" class="form-control" type="password" placeholder="`oc whoami --token`"></input></td>
-                </tr>
               </thead>
+              <tr>
+                <td><input id="master-input" class="form-control" type="text" autofocus="autofocus" placeholder="https://192.168.99.100"></input></td>
+                <td><input id="port-input" class="form-control" type="text" placeholder="8443"></input></td>
+                <td><input id="request-input" class="form-control" type="text" placeholder="/oapi/v1/namespaces/myproject/deploymentconfigs`"></input></td>
+                <td><input id="token-input" class="form-control" type="password" placeholder="`oc whoami --token`"></input></td>
+              </tr>
             </table>
           </div>
         </div>
       </div>
+      <div id="settings-div">
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title"><a data-toggle="collapse" class="collapsed" href="#collapse-settings">Settings</a></h4>
+            </div>
+            <div id="collapse-settings" class="panel-collapse collapse">
+              <table id="config-table" class="table table-striped">
+                <thead class="thead-default">
+                  <tr>
+                    <th>Key</th><th>Value</th>
+                  </tr>
+                </thead>
+                <tr>
+                  <td>Namespace pattern</td>
+                  <td><input id="namespace-pattern" placeholder="^[a-z0-9\\._-]*$"></input></td>
+                </tr>
+                <tr>
+                  <td>Name pattern</td>
+                  <td><input id="name-pattern" placeholder="^[a-z0-9\\._-]+$"></input></td>
+                </tr>
+                <tr>
+                  <td>Container pattern</td>
+                  <td><input id="container-pattern" placeholder="^[a-z0-9\\._-]+$"></input></td>
+                </tr>
+                <tr>
+                  <td>Environment variable pattern</td>
+                  <td><input id="env-pattern" placeholder="^[A-Z0-9_-]+$"></input></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+      </div>
+
       <div id="data-div">
         <div class="panel-group">
           <div class="panel panel-default">

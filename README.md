@@ -24,7 +24,7 @@ The two main use cases are:
 
 * You already have a bunch of configuration files (the output of `oc export dc --all-namespaces`, say, assuming you're lucky enough to be `cluster-admin`)
 ```
-$ ./openshift-linter i-contain-multitudes.json`
+$ ./openshift-linter i-contain-multitudes.json
 ```
 
 * Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
