@@ -1,0 +1,22 @@
+{
+  "name": "openshift-linter",
+  "description": "OpenShift linter utility",
+  "main": "openshift-linter.go",
+  "authors": [
+    "gerald1248"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/gerald1248/timeline",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "clipboard": "^1.5.15"
+  }
+}

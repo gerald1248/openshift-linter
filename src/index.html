@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>OpenShift Linter</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/static/css/main.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container">
+      <div>
+        <p class="h3 text-center">OpenShift Linter</p>
+      </div>
+      <div class="panel-group">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4 class="panel-title">Authentication</h4>
+          </div>
+          <div>
+            <table id="task-table" class="table table-striped">
+              <thead class="thead-default">
+                <tr>
+                  <th>Master</th><th>Port</th><th>Request</th><th>Token</th>
+                </tr>
+                <tr>
+                  <td><input id="master-input" class="form-control" type="text" autofocus="autofocus" placeholder="https://192.168.99.100"></input></td>
+                  <td><input id="port-input" class="form-control" type="text" placeholder="8443"></input></td>
+                  <td><input id="request-input" class="form-control" type="text" placeholder="/oapi/v1/namespaces/myproject/deploymentconfigs`"></input></td>
+                  <td><input id="token-input" class="form-control" type="password" placeholder="`oc whoami --token`"></input></td>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div id="data-div">
+        <div class="panel-group">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">Data</h4>
+            </div>
+            <div>
+              <div>
+                <input type="text" class="form-control" id="data"></input>
+                <button id="update-button" class="btn btn-default">Update</button>
+                <button id="copy-button" type="button" class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#data">Copy to clipboard</button>
+                <span id="error"></span>
+              </div>
+            </div>
+          </div>  
+        </div>
+      </div>
+      <div id="buttons-1">
+        <button id="create-report-button" class="btn btn-default">Create report</button>
+      </div>
+      <br/>
+      <div id="report"></div>
+    </div>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/clipboard.min.js"></script>
+    <script src="/static/js/bundle-min.js"></script>
+  </body>
+</html>
+

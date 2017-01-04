@@ -1,0 +1,36 @@
+{
+  "name": "openshift-linter",
+  "version": "0.1.0",
+  "description": "basic linter for OpenShift configuration objects",
+  "main": "openshift-linter.go",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gerald1248/openshift-linter.git"
+  },
+  "author": "gerald1248",
+  "license": "MIT",
+  "homepage": "https://github.com/gerald1248/openshift-linter",
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.7.4",
+    "del": "^2.2.0",
+    "getos": "^2.8.2",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.0.13",
+    "gulp-concat": "^2.6.0",
+    "gulp-htmlmin": "^3.0.0",
+    "gulp-jsonminify": "^1.0.0",
+    "gulp-md5": "^0.1.2",
+    "gulp-minify": "0.0.14",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-util": "^3.0.7",
+    "gulp-zip": "^3.2.0",
+    "os": "^0.1.1",
+    "run-sequence": "^1.2.2",
+    "through2": "^2.0.1",
+    "yargs": "^4.4.0"
+  }
+}
