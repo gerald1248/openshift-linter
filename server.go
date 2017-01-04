@@ -13,7 +13,7 @@ type PostStruct struct {
 	Buffer string
 }
 
-func serve(host string, port int, envPattern, namespacePattern, namePattern string) {
+func serve(host string, port int) {
 	virtual_fs := &assetfs.AssetFS{
 		Asset:     Asset,
 		AssetDir:  AssetDir,
@@ -57,7 +57,8 @@ func handlePost(w *http.ResponseWriter, r *http.Request) {
 	}
 
 	//TODO: get pattern values
-	combinedResultMap, err := processBytes(body, ".*", ".*", ".*")
+	any := ".*"
+	combinedResultMap, err := processBytes(body, any, any, any, any)
 	if err != nil {
 		fmt.Fprintf(*w, "Can't process POST request body: %s\n%s\n", err, body)
 		return

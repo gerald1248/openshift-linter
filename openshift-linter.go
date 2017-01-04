@@ -19,19 +19,23 @@ func main() {
 
 	host := flag.String("n", "localhost", "hostname")
 	port := flag.Int("p", 8000, "listen on port")
-	envPattern := flag.String("env", "^[A-Z0-9_-]+$", "pattern for environment variables")
-	namespacePattern := flag.String("namespace", "^[a-z0-9\\._-]+$", "pattern for namespaces/projects")
+	namespacePattern := flag.String("namespace", "^[a-z0-9\\._-]*$", "pattern for namespaces/projects")
 	namePattern := flag.String("name", "^[a-z0-9\\._-]+$", "pattern for names")
+	containerPattern := flag.String("container", "^[a-z0-9\\._-]+$", "pattern for containers")
+	envPattern := flag.String("env", "^[A-Z0-9_-]+$", "pattern for environment variables")
 	flag.Parse()
 	args := flag.Args()
+
+	//patterns are ignored in server mode - specify as follows:
+	//{ customNamespacePattern="...", customNamePattern="..."", ... }
 	if len(args) == 0 {
-		serve(*host, *port, *envPattern, *namespacePattern, *namePattern)
+		serve(*host, *port)
 		return
 	}
 
 	for _, arg := range args {
 		start := time.Now()
-		msg, code := processFile(arg, *envPattern, *namespacePattern, *namePattern)
+		msg, code := processFile(arg, *namespacePattern, *namePattern, *containerPattern, *envPattern)
 		secs := time.Since(start).Seconds()
 
 		if code > 0 {
@@ -42,14 +46,13 @@ func main() {
 	}
 }
 
-func processFile(path, envPattern, namespacePattern, namePattern string) (string, int) {
-
+func processFile(path, namespacePattern, namePattern, containerPattern, envPattern string) (string, int) {
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		return fmt.Sprintf("can't read %s", path), 1
 	}
 
-	combinedResultMap, err := processBytes(bytes, envPattern, namespacePattern, namePattern)
+	combinedResultMap, err := processBytes(bytes, namespacePattern, namePattern, containerPattern, envPattern)
 
 	if err != nil {
 		return fmt.Sprintf("can't process bytes %s", path), 1
