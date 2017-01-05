@@ -55,8 +55,7 @@ var App = function() {
       success: function(data) {
         //TODO: error messages should be JSON too
         if (typeof(data) !== "object") {
-          console.log("NOTANOBJECT");
-          $('#report')[0].innerHTML = JSON.stringify(data);
+          $('#report')[0].innerHTML = data;
           return;
         }
         $('#report')[0].innerHTML = self.formatReport(data);
@@ -96,7 +95,6 @@ var App = function() {
     var token = $('#token-input').val();
     var request = $('#request-input').val();
     var url = master + ":" + port + request;
-    console.log("GET", url);
 
     $.ajax({
       url: url,
@@ -115,6 +113,7 @@ var App = function() {
           err.responseJSON.message :
           err.statusText;
         $('#error')[0].innerHTML = msg;
+        console.log(err);
       }
     });
   };
