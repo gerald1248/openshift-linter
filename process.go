@@ -89,33 +89,42 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 
 	reNamespace, err := regexp.Compile(namespacePattern)
 	checkNamespace := err == nil
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("%s", err))
+	}
 
 	reName, err := regexp.Compile(namePattern)
 	checkName := err == nil
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("%s", err))
+	}
 
 	reContainer, err := regexp.Compile(containerPattern)
 	checkContainer := err == nil
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("%s", err))
+	}
 
 	for _, key := range keysEnv {
 		item := resultEnv[key]
 		for _, spec := range item {
 			if checkNamespace == true {
-				display := fmt.Sprintf("%s !~ /%s/", spec.Namespace, namespacePattern)
 				if reNamespace.FindStringIndex(spec.Namespace) == nil {
+					display := fmt.Sprintf("%s !~ /%s/", spec.Namespace, namespacePattern)
 					resultInvalidName[display] = append(resultInvalidName[display], spec)
 				}
 			}
 
 			if checkName == true {
-				display := fmt.Sprintf("%s !~ /%s/", spec.Name, namePattern)
 				if reName.FindStringIndex(spec.Name) == nil {
+					display := fmt.Sprintf("%s !~ /%s/", spec.Name, namePattern)
 					resultInvalidName[display] = append(resultInvalidName[display], spec)
 				}
 			}
 
 			if checkContainer == true {
-				display := fmt.Sprintf("%s !~ /%s/", spec.Container, containerPattern)
 				if reContainer.FindStringIndex(spec.Container) == nil {
+					display := fmt.Sprintf("%s !~ /%s/", spec.Container, containerPattern)
 					resultInvalidName[display] = append(resultInvalidName[display], spec)
 				}
 			}
@@ -135,6 +144,8 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 				}
 			}
 		}
+	} else {
+		return nil, errors.New(fmt.Sprintf("can't compile regex %s: %s", envPattern, err))
 	}
 
 	//deployment config without/with incomplete limits

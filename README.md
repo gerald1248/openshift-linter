@@ -1,7 +1,7 @@
 OpenShift Linter
 ================
 
-This is a utility for OpenShift users who want to know if certain (very basic) rules have been followed. You can also specify naming conventions for namespaces and projects.
+This is a utility for OpenShift users/admins who want to know if certain (very basic) rules have been followed. You can also specify naming conventions for namespaces (i.e. projects), names, containers and environment variables.
 
 As it's very early days the focus is on `deploymentConfig` objects.
 
@@ -9,17 +9,20 @@ Usage
 -----
 ```
 Usage: ./openshift-linter [<JSON file> [<JSON file>]]
+  -container string
+      pattern for containers (default "^[a-z0-9_-]+$")
   -env string
       pattern for environment variables (default "^[A-Z0-9_-]+$")
   -n string
       hostname (default "localhost")
   -name string
-      pattern for names (default "^[a-z0-9\\._-]+$")
+      pattern for names (default "^[a-z0-9_-]+$")
   -namespace string
-      pattern for namespaces/projects (default "^[a-z0-9\\._-]+$")
+      pattern for namespaces/projects (default "^[a-z0-9_-]*$")
   -p int
       listen on port (default 8000)
 ```
+
 The two main use cases are:
 
 * You already have a bunch of configuration files (the output of `oc export dc --all-namespaces`, say, assuming you're lucky enough to be `cluster-admin`)
@@ -28,6 +31,8 @@ $ ./openshift-linter i-contain-multitudes.json
 ```
 
 * Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
+
+When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole. Conversely, if all namespaces specify a member of the 00 Section, but the rest doesn't matter, `00[0-9]` will do, though Fleming enthusiasts will no doubt insist on `OO[0-9]`.
 
 Build
 -----
@@ -50,7 +55,7 @@ src
 Next, install Node.js with npm using your package manager. `cd` into the working directory `openshift-linter` and enter:
 
 ```
-$ npm install -g gulp-cli
+$ sudo npm install -g gulp-cli
 $ npm install
 ```
 
