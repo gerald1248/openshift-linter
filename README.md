@@ -32,7 +32,7 @@ $ ./openshift-linter i-contain-multitudes.json
 
 * Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
 
-When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole. Conversely, if all namespaces specify a member of the 00 Section, but the rest doesn't matter, `00[0-9]` will do, though Fleming enthusiasts will no doubt insist on `OO[0-9]`.
+When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole. Conversely, if all namespaces specify a member of the 00 Section, but the rest doesn't matter, `00[0-9]` is fine, though Fleming enthusiasts will no doubt insist on `OO[0-9]`.
 
 Build
 -----
