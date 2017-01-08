@@ -16,6 +16,16 @@ var App = function() {
       //TODO: Ctrl+C message fallback
     });
 
+    //modal action
+    $('#modal-action-button').on('click', function() {
+      self.sideload();
+    });
+
+    //keyboard focus on textarea for quick paste action
+    //not allowed to read from clipboard
+    $('#sideload-modal').on('shown.bs.modal', function() {
+      $('#modal-source').focus();
+    });
   };
 
   //POST config objects, retrieve report
@@ -113,10 +123,26 @@ var App = function() {
           err.responseJSON.message :
           err.statusText;
         $('#error')[0].innerHTML = msg;
-        console.log(err);
       }
     });
   };
+
+  this.sideload = function() {
+    var s = $('#modal-source')[0].value;
+    try {
+      var obj = JSON.parse(s);
+    } catch(e) {
+      $('#report')[0].innerHTML = e.message;
+      return;
+    }
+
+    if (obj === {} || obj === null || typeof(obj) === 'undefined') {
+      $('#report')[0].innerHTML = "No data";
+    }
+
+    $('#report')[0].innerHTML = this.formatReport(obj);
+  };
+
 
   this.storageGetter = function() {
     if (typeof(localStorage) === "undefined") {
@@ -148,7 +174,6 @@ var App = function() {
     localStorage.setItem("container-pattern", $('#container-pattern').val());
     localStorage.setItem("env-pattern", $('#env-pattern').val());
     localStorage.setItem("data", $('#data').val());
-
   };
 };
 
