@@ -91,13 +91,20 @@ var App = function() {
         buffer += "<table class='table table-striped'>";
         buffer += "<thead class='thead-default'><tr><th>Namespace</th><th>Name</th><th>Container</th></tr></thead>";
         for (var i = 0; i < len; i++) {
-            buffer += "<tr><td>" + list[i].Namespace + "</td><td>" + list[i].Name + "</td><td>" + list[i].Container + "</td></tr>";
+            buffer += "<tr><td>" + this.nonBlank(list[i].Namespace) + "</td><td>" + this.nonBlank(list[i].Name) + "</td><td>" + this.nonBlank(list[i].Container) + "</td></tr>";
         }
         buffer += "</table>";
       }
     }
     return buffer; 
-  }
+  };
+
+  this.nonBlank = function(s) {
+    if (s.length === 0) {
+      return "&ndash;";
+    }
+    return s;
+  };
 
   //GET request to fetch list of config objects
   this.get = function() {
