@@ -5,6 +5,10 @@ This is a utility for OpenShift users/admins who want to know if certain (very b
 
 As it's very early days the focus is on `deploymentConfig` objects.
 
+<img src="screenshots/openshift-linter.png" width="512" alt="Screenshot of the OpenShift Linter GUI"/>
+
+**Fig. 1** Experimental GUI
+
 Usage
 -----
 ```
