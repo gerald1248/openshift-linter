@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern, envPattern string) (CombinedResultMap, error) {
+func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) {
 	var config Config
 
 	if err := json.Unmarshal(bytes, &config); err != nil {
@@ -18,19 +18,19 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 
 	//for POST req access, pick up custom settings from JSON obj
 	if config.CustomNamespacePattern != "" {
-		namespacePattern = config.CustomNamespacePattern
+		params.NamespacePattern = config.CustomNamespacePattern
 	}
 
 	if config.CustomNamePattern != "" {
-		namePattern = config.CustomNamePattern
+		params.NamePattern = config.CustomNamePattern
 	}
 
 	if config.CustomContainerPattern != "" {
-		containerPattern = config.CustomContainerPattern
+		params.ContainerPattern = config.CustomContainerPattern
 	}
 
 	if config.CustomEnvPattern != "" {
-		envPattern = config.CustomEnvPattern
+		params.EnvPattern = config.CustomEnvPattern
 	}
 
 	//environment variables
@@ -55,7 +55,6 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 		}
 	}
 
-	//TODO: near match
 	var keysEnv []string
 	for k, _ := range resultEnv {
 		keysEnv = append(keysEnv, k)
@@ -87,19 +86,19 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 	//name pattern
 	resultInvalidName := make(ResultMap)
 
-	reNamespace, err := regexp.Compile(namespacePattern)
+	reNamespace, err := regexp.Compile(params.NamespacePattern)
 	checkNamespace := err == nil
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("%s", err))
 	}
 
-	reName, err := regexp.Compile(namePattern)
+	reName, err := regexp.Compile(params.NamePattern)
 	checkName := err == nil
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("%s", err))
 	}
 
-	reContainer, err := regexp.Compile(containerPattern)
+	reContainer, err := regexp.Compile(params.ContainerPattern)
 	checkContainer := err == nil
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("%s", err))
@@ -110,21 +109,21 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 		for _, spec := range item {
 			if checkNamespace == true {
 				if reNamespace.FindStringIndex(spec.Namespace) == nil {
-					display := fmt.Sprintf("%s !~ /%s/", spec.Namespace, namespacePattern)
+					display := fmt.Sprintf("%s !~ /%s/", spec.Namespace, params.NamespacePattern)
 					resultInvalidName[display] = append(resultInvalidName[display], spec)
 				}
 			}
 
 			if checkName == true {
 				if reName.FindStringIndex(spec.Name) == nil {
-					display := fmt.Sprintf("%s !~ /%s/", spec.Name, namePattern)
+					display := fmt.Sprintf("%s !~ /%s/", spec.Name, params.NamePattern)
 					resultInvalidName[display] = append(resultInvalidName[display], spec)
 				}
 			}
 
 			if checkContainer == true {
 				if reContainer.FindStringIndex(spec.Container) == nil {
-					display := fmt.Sprintf("%s !~ /%s/", spec.Container, containerPattern)
+					display := fmt.Sprintf("%s !~ /%s/", spec.Container, params.ContainerPattern)
 					resultInvalidName[display] = append(resultInvalidName[display], spec)
 				}
 			}
@@ -133,23 +132,24 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 
 	//env pattern
 	resultInvalidKey := make(ResultMap)
-	reEnv, err := regexp.Compile(envPattern)
+	reEnv, err := regexp.Compile(params.EnvPattern)
 	if err == nil {
 		for _, key := range keysEnv {
 			if reEnv.FindStringIndex(key) == nil {
 				item := resultEnv[key]
-				displayKey := fmt.Sprintf("%s !~ /%s/", key, envPattern)
+				displayKey := fmt.Sprintf("%s !~ /%s/", key, params.EnvPattern)
 				for _, spec := range item {
 					resultInvalidKey[displayKey] = append(resultInvalidKey[displayKey], spec)
 				}
 			}
 		}
 	} else {
-		return nil, errors.New(fmt.Sprintf("can't compile regex %s: %s", envPattern, err))
+		return nil, errors.New(fmt.Sprintf("can't compile regex %s: %s", params.EnvPattern, err))
 	}
 
 	//deployment config without/with incomplete limits
 	resultLimits := make(ResultMap)
+	resultImagePullPolicy := make(ResultMap)
 	problem = "" //reset
 	for _, item := range config.Items {
 
@@ -157,6 +157,14 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 		if item.Spec != nil && item.Spec.Template != nil {
 			for _, container := range item.Spec.Template.Spec.Containers {
 				name := container.Name
+				if container.ImagePullPolicy == "Always" {
+					problem = "image_pull_policy_always"
+					if resultImagePullPolicy[problem] == nil {
+						var containerSet ContainerSet
+						resultImagePullPolicy[problem] = containerSet
+					}
+					resultImagePullPolicy[problem] = append(resultImagePullPolicy[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				}
 				if container.Resources == nil {
 					problem = "no_resources"
 					if resultLimits[problem] == nil {
@@ -205,5 +213,6 @@ func processBytes(bytes []byte, namespacePattern, namePattern, containerPattern,
 	combined["invalid_key"] = resultInvalidKey
 	combined["invalid_name"] = resultInvalidName
 	combined["limits"] = resultLimits
+	combined["image_pull_policy"] = resultImagePullPolicy
 	return combined, nil
 }

@@ -35,7 +35,7 @@ func main() {
 
 	for _, arg := range args {
 		start := time.Now()
-		msg, code := processFile(arg, *namespacePattern, *namePattern, *containerPattern, *envPattern)
+		msg, code := processFile(arg, LinterParams{*namespacePattern, *namePattern, *containerPattern, *envPattern})
 		secs := time.Since(start).Seconds()
 
 		if code > 0 {
@@ -46,13 +46,19 @@ func main() {
 	}
 }
 
-func processFile(path, namespacePattern, namePattern, containerPattern, envPattern string) (string, int) {
+func processFile(path string, params LinterParams) (string, int) {
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		return fmt.Sprintf("can't read %s", path), 1
 	}
 
-	combinedResultMap, err := processBytes(bytes, namespacePattern, namePattern, containerPattern, envPattern)
+	//preflight with optional conversion from YAMLs
+	err = preflightAsset(&bytes, path)
+	if err != nil {
+		return fmt.Sprintf("%s failed preflight check: %v", path, err), 1
+	}
+
+	combinedResultMap, err := processBytes(bytes, params)
 
 	if err != nil {
 		return fmt.Sprintf("can't process %s: %s", path, err), 1
@@ -61,7 +67,7 @@ func processFile(path, namespacePattern, namePattern, containerPattern, envPatte
 	json, err := json.MarshalIndent(combinedResultMap, "", "  ")
 
 	if err != nil {
-		return fmt.Sprintf("can't marshall JSON %v", combinedResultMap), 1
+		return fmt.Sprintf("can't marshal JSON %v", combinedResultMap), 1
 	}
 
 	return string(json), 0

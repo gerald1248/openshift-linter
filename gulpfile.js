@@ -25,6 +25,7 @@ if (platform === "linux") {
     }
   });
 }
+var arch = os.arch()
 var race = false;
 var raceSwitch = (race) ? " -race" : "";
 
@@ -84,7 +85,7 @@ gulp.task('package-binary', function() {
 
 gulp.task('dist', function() {
   return gulp.src('./package/**/*', { base: './package' })
-    .pipe(zip(pkg.name + '-' + pkg.version + '-' + platform + '.zip'))
+    .pipe(zip(pkg.name + '-' + pkg.version + '-' + platform + '-' + arch + '.zip'))
     .pipe(md5())
     .pipe(gulp.dest('./dist'));
 });
@@ -99,7 +100,7 @@ gulp.task('test', function(callback) {
 
 gulp.task('fmt', function(callback) {
   //listing files so bindata.go is ignored
-  exec('gofmt -d openshift-linter.go types.go process.go server.go', function(err, stdout, stderr) {
+  exec('gofmt -d openshift-linter.go types.go interfaces.go process.go server.go preflight.go', function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
@@ -119,7 +120,12 @@ gulp.task('clean-home', function() {
 });
 
 gulp.task('clean-build', function() {
-  return del.sync(['./dist/' + pkg.name + '-*-' + platform + '_*.zip', './package/**/*', './static/*.json'], { force: true });
+  return del.sync([
+    './dist/' + pkg.name + '-*-' + platform + '_*.zip',
+    './dist/' + pkg.name + '-*-' + platform + '-' + arch + '_*.zip',
+    './package/**/*',
+    './static/*.json'
+  ], { force: true });
 });
 
 gulp.task('build-bindata', function(callback) {

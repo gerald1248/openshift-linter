@@ -86,7 +86,8 @@ var App = function() {
         if (len === 0) {
           continue;
         }
-        buffer += "<h3>" + key + ": " + subkey + "</h3>";
+        plural = (len === 1) ? "" : "s"
+        buffer += "<h3>" + key + ": " + subkey + " (" + len + " item" + plural + ")</h3>";
         buffer += "<table class='table table-striped'>";
         buffer += "<thead class='thead-default'><tr><th>Namespace</th><th>Name</th><th>Container</th></tr></thead>";
         for (var i = 0; i < len; i++) {

@@ -56,9 +56,8 @@ func handlePost(w *http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//TODO: get pattern values
-	any := ".*"
-	combinedResultMap, err := processBytes(body, any, any, any, any)
+	any := ".*" //for POST requests, patterns are specified within config body
+	combinedResultMap, err := processBytes(body, LinterParams{any, any, any, any})
 	if err != nil {
 		fmt.Fprintf(*w, "Can't process POST request body: %s\n%s\n", err, body)
 		return

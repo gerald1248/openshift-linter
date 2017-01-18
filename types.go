@@ -29,9 +29,10 @@ type Spec struct {
 }
 
 type Container struct {
-	Name      string     `json:"name"`
-	Env       []*EnvItem `json:"env"`
-	Resources *Resources `json:"resources"`
+	Name            string     `json:"name"`
+	ImagePullPolicy string     `json:"imagePullPolicy"`
+	Env             []*EnvItem `json:"env"`
+	Resources       *Resources `json:"resources"`
 }
 
 type EnvItem struct {
@@ -77,3 +78,10 @@ type ResultItem struct {
 }
 
 type CombinedResultMap map[string]ResultMap
+
+type LinterParams struct {
+	NamespacePattern string
+	NamePattern      string
+	ContainerPattern string
+	EnvPattern       string
+}
