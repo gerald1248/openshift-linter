@@ -1,6 +1,6 @@
 {
   "name": "openshift-linter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "basic linter for OpenShift configuration objects",
   "main": "openshift-linter.go",
   "scripts": {
