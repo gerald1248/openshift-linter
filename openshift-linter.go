@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -44,31 +42,4 @@ func main() {
 		}
 		fmt.Printf("%s\n", msg)
 	}
-}
-
-func processFile(path string, params LinterParams) (string, int) {
-	bytes, err := ioutil.ReadFile(path)
-	if err != nil {
-		return fmt.Sprintf("can't read %s", path), 1
-	}
-
-	//preflight with optional conversion from YAMLs
-	err = preflightAsset(&bytes, path)
-	if err != nil {
-		return fmt.Sprintf("%s failed preflight check: %v", path, err), 1
-	}
-
-	combinedResultMap, err := processBytes(bytes, params)
-
-	if err != nil {
-		return fmt.Sprintf("can't process %s: %s", path, err), 1
-	}
-
-	json, err := json.MarshalIndent(combinedResultMap, "", "  ")
-
-	if err != nil {
-		return fmt.Sprintf("can't marshal JSON %v", combinedResultMap), 1
-	}
-
-	return string(json), 0
 }
