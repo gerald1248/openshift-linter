@@ -20,7 +20,6 @@ func TestPreflightAsset(t *testing.T) {
 - "roobar"
 `)
 	multilineYamlConverted := []byte("{\"foo\":[\"bar\",\"foobar\",\"boofar\",\"roobar\"]}")
-
 	//expect error
 	err := preflightAsset(&invalidUtf8, jsonFileMock)
 	if err == nil {

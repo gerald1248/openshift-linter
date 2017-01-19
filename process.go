@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"regexp"
-	"sort"
-	"strings"
+	"io/ioutil"
 )
 
 func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) {
@@ -33,179 +31,25 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		params.EnvPattern = config.CustomEnvPattern
 	}
 
-	//environment variables
-	resultEnv := make(ResultMap)
-	for _, item := range config.Items {
-
-		//nested template with its own `metadata` and `spec` properties?
-		if item.Spec != nil && item.Spec.Template != nil {
-			for _, container := range item.Spec.Template.Spec.Containers {
-				name := container.Name
-				for _, envItem := range container.Env {
-
-					//key doesn't exist: create array
-					if resultEnv[envItem.Name] == nil {
-						var containerSet ContainerSet
-						resultEnv[envItem.Name] = containerSet
-					}
-
-					resultEnv[envItem.Name] = append(resultEnv[envItem.Name], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				}
-			}
-		}
-	}
-
-	var keysEnv []string
-	for k, _ := range resultEnv {
-		keysEnv = append(keysEnv, k)
-	}
-	sort.Strings(keysEnv)
-	reverseLookup := make(map[string]string)
-	resultSimilarKey := make(ResultMap)
-
-	problem := ""
-	previous := ""
-	current := ""
-	for _, item := range keysEnv {
-		re := regexp.MustCompile("[_-]")
-		simplified := strings.ToLower(re.ReplaceAllString(item, ""))
-
-		if reverseLookup[simplified] != "" {
-			previous = reverseLookup[simplified]
-			current = item
-			problem = fmt.Sprintf("%s ~ %s", current, previous)
-			previousItem := resultEnv[previous]
-			for _, spec := range previousItem {
-				resultSimilarKey[problem] = append(resultSimilarKey[problem], spec)
-			}
-		} else {
-			reverseLookup[simplified] = item
-		}
-	}
-
-	//name pattern
-	resultInvalidName := make(ResultMap)
-
-	reNamespace, err := regexp.Compile(params.NamespacePattern)
-	checkNamespace := err == nil
+	resultSimilarKey, err := ItemSimilarKey(&config, params)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("%s", err))
+		return nil, err
 	}
-
-	reName, err := regexp.Compile(params.NamePattern)
-	checkName := err == nil
+	resultInvalidKey, err := ItemInvalidKey(&config, params)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("%s", err))
+		return nil, err
 	}
-
-	reContainer, err := regexp.Compile(params.ContainerPattern)
-	checkContainer := err == nil
+	resultInvalidName, err := ItemInvalidName(&config, params)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("%s", err))
+		return nil, err
 	}
-
-	for _, key := range keysEnv {
-		item := resultEnv[key]
-		for _, spec := range item {
-			if checkNamespace == true {
-				if reNamespace.FindStringIndex(spec.Namespace) == nil {
-					display := fmt.Sprintf("%s !~ /%s/", spec.Namespace, params.NamespacePattern)
-					resultInvalidName[display] = append(resultInvalidName[display], spec)
-				}
-			}
-
-			if checkName == true {
-				if reName.FindStringIndex(spec.Name) == nil {
-					display := fmt.Sprintf("%s !~ /%s/", spec.Name, params.NamePattern)
-					resultInvalidName[display] = append(resultInvalidName[display], spec)
-				}
-			}
-
-			if checkContainer == true {
-				if reContainer.FindStringIndex(spec.Container) == nil {
-					display := fmt.Sprintf("%s !~ /%s/", spec.Container, params.ContainerPattern)
-					resultInvalidName[display] = append(resultInvalidName[display], spec)
-				}
-			}
-		}
+	resultLimits, err := ItemLimits(&config, params)
+	if err != nil {
+		return nil, err
 	}
-
-	//env pattern
-	resultInvalidKey := make(ResultMap)
-	reEnv, err := regexp.Compile(params.EnvPattern)
-	if err == nil {
-		for _, key := range keysEnv {
-			if reEnv.FindStringIndex(key) == nil {
-				item := resultEnv[key]
-				displayKey := fmt.Sprintf("%s !~ /%s/", key, params.EnvPattern)
-				for _, spec := range item {
-					resultInvalidKey[displayKey] = append(resultInvalidKey[displayKey], spec)
-				}
-			}
-		}
-	} else {
-		return nil, errors.New(fmt.Sprintf("can't compile regex %s: %s", params.EnvPattern, err))
-	}
-
-	//deployment config without/with incomplete limits
-	resultLimits := make(ResultMap)
-	resultImagePullPolicy := make(ResultMap)
-	problem = "" //reset
-	for _, item := range config.Items {
-
-		//nested template with its own `metadata` and `spec` properties?
-		if item.Spec != nil && item.Spec.Template != nil {
-			for _, container := range item.Spec.Template.Spec.Containers {
-				name := container.Name
-				if container.ImagePullPolicy == "Always" {
-					problem = "image_pull_policy_always"
-					if resultImagePullPolicy[problem] == nil {
-						var containerSet ContainerSet
-						resultImagePullPolicy[problem] = containerSet
-					}
-					resultImagePullPolicy[problem] = append(resultImagePullPolicy[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				}
-				if container.Resources == nil {
-					problem = "no_resources"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
-					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-					continue
-				}
-				if container.Resources.Limits == nil || container.Resources.Limits.None() == true {
-					problem = "no_limits"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
-					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				} else if container.Resources.Limits.Complete() == false {
-					problem = "incomplete_limits"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
-					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				}
-				if container.Resources.Requests == nil || container.Resources.Requests.None() == true {
-					problem = "no_requests"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
-					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				} else if container.Resources.Requests.Complete() == false {
-					problem = "incomplete_requests"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
-					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				}
-			}
-		}
+	resultImagePullPolicy, err := ItemImagePullPolicy(&config, params)
+	if err != nil {
+		return nil, err
 	}
 
 	combined := make(CombinedResultMap)
@@ -215,4 +59,31 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 	combined["limits"] = resultLimits
 	combined["image_pull_policy"] = resultImagePullPolicy
 	return combined, nil
+}
+
+func processFile(path string, params LinterParams) (string, int) {
+	bytes, err := ioutil.ReadFile(path)
+	if err != nil {
+		return fmt.Sprintf("can't read %s", path), 1
+	}
+
+	//preflight with optional conversion from YAMLs
+	err = preflightAsset(&bytes, path)
+	if err != nil {
+		return fmt.Sprintf("%s failed preflight check: %v", path, err), 1
+	}
+
+	combinedResultMap, err := processBytes(bytes, params)
+
+	if err != nil {
+		return fmt.Sprintf("can't process %s: %s", path, err), 1
+	}
+
+	json, err := json.MarshalIndent(combinedResultMap, "", "  ")
+
+	if err != nil {
+		return fmt.Sprintf("can't marshal JSON %v", combinedResultMap), 1
+	}
+
+	return string(json), 0
 }
