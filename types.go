@@ -1,8 +1,7 @@
 package main
 
-//TODO: refactor item-* functions to match interface
 type LinterItem interface {
-	Lint(*Config, *LinterParams) (ResultMap, error)
+	Lint(*Config, LinterParams) (ResultMap, error)
 	Name() string
 }
 

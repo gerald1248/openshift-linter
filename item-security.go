@@ -1,11 +1,17 @@
 package main
 
-func ItemSecurity(config *Config, params LinterParams) (ResultMap, error) {
+type ItemSecurity struct {
+	name string
+}
+
+func (is *ItemSecurity) Name() string {
+	return is.name
+}
+
+func (is *ItemSecurity) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	resultSecurity := make(ResultMap)
 	problem := "privileged"
 	for _, item := range config.Items {
-
-		//nested template with its own `metadata` and `spec` properties?
 		if item.Spec != nil && item.Spec.Template != nil {
 			for _, container := range item.Spec.Template.Spec.Containers {
 				name := container.Name
@@ -14,7 +20,11 @@ func ItemSecurity(config *Config, params LinterParams) (ResultMap, error) {
 						var containerSet ContainerSet
 						resultSecurity[problem] = containerSet
 					}
-					resultSecurity[problem] = append(resultSecurity[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+					resultSecurity[problem] = append(
+						resultSecurity[problem],
+						ContainerSpec{item.Metadata.Namespace,
+							item.Metadata.Name,
+							name})
 				}
 			}
 		}

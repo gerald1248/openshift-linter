@@ -1,11 +1,17 @@
 package main
 
-func ItemImagePullPolicy(config *Config, params LinterParams) (ResultMap, error) {
+type ItemImagePullPolicy struct {
+	name string
+}
+
+func (iipp *ItemImagePullPolicy) Name() string {
+	return iipp.name
+}
+
+func (iipp *ItemImagePullPolicy) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	resultImagePullPolicy := make(ResultMap)
 	problem := "image pull policy always"
 	for _, item := range config.Items {
-
-		//nested template with its own `metadata` and `spec` properties?
 		if item.Spec != nil && item.Spec.Template != nil {
 			for _, container := range item.Spec.Template.Spec.Containers {
 				name := container.Name

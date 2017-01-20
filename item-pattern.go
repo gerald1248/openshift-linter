@@ -6,7 +6,15 @@ import (
 	"regexp"
 )
 
-func ItemInvalidName(config *Config, params LinterParams) (ResultMap, error) {
+type ItemInvalidName struct {
+	name string
+}
+
+func (iin *ItemInvalidName) Name() string {
+	return iin.name
+}
+
+func (iin *ItemInvalidName) Lint(config *Config, params LinterParams) (ResultMap, error) {
 
 	//see item-env for these two getters
 	resultEnv, _ := ResultEnv(config, params)

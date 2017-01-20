@@ -1,6 +1,14 @@
 package main
 
-func ItemLimits(config *Config, params LinterParams) (ResultMap, error) {
+type ItemLimits struct {
+	name string
+}
+
+func (il *ItemLimits) Name() string {
+	return il.name
+}
+
+func (il *ItemLimits) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	//deployment config without/with incomplete limits
 	resultLimits := make(ResultMap)
 	var problem string

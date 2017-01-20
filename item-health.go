@@ -1,6 +1,14 @@
 package main
 
-func ItemHealth(config *Config, params LinterParams) (ResultMap, error) {
+type ItemHealth struct {
+	name string
+}
+
+func (ih *ItemHealth) Name() string {
+	return ih.name
+}
+
+func (is *ItemHealth) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	resultHealth := make(ResultMap)
 	var problem string
 	for _, item := range config.Items {
