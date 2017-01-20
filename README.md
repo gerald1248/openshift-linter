@@ -7,7 +7,7 @@ As it's very early days the focus is on `deploymentConfig` objects.
 
 <img src="screenshots/openshift-linter.png" width="512" alt="Screenshot of the OpenShift Linter GUI"/>
 
-**Fig. 1** Experimental GUI
+**Fig. 1** OpenShift Linter GUI
 
 Usage
 -----
@@ -42,7 +42,7 @@ Listing
 -------
 To print a list of the available linter items, enter:
 ```
-$ package/openshift-linter list
+$ ./openshift-linter list
 health
 image pull policy
 invalid key
