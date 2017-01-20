@@ -38,6 +38,20 @@ $ ./openshift-linter i-contain-multitudes.json
 
 When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole. Conversely, if all namespaces specify a member of the 00 Section, but the rest doesn't matter, `00[0-9]` is fine, though Fleming enthusiasts will no doubt insist on `OO[0-9]`.
 
+Listing
+-------
+To print a list of the available linter items, enter:
+```
+$ package/openshift-linter list
+health
+image pull policy
+invalid key
+invalid name
+limits
+security
+similar key
+```
+
 Build
 -----
 Install Go using one of the installers available from `https://golang.org/dl/` and set up your `$GOPATH` and `$GOBIN` as you see fit (exporting `GOPATH=~/golang` and `GOBIN=$GOPATH/bin` in your `.bash_profile` will do).
