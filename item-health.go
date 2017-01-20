@@ -1,0 +1,54 @@
+package main
+
+func ItemHealth(config *Config, params LinterParams) (ResultMap, error) {
+	resultHealth := make(ResultMap)
+	var problem string
+	for _, item := range config.Items {
+
+		//nested template with its own `metadata` and `spec` properties?
+		if item.Spec != nil && item.Spec.Template != nil {
+			for _, container := range item.Spec.Template.Spec.Containers {
+				name := container.Name
+				if container.LivenessProbe == nil {
+					problem = "no liveness probe"
+					if resultHealth[problem] == nil {
+						var containerSet ContainerSet
+						resultHealth[problem] = containerSet
+					}
+					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				} else if ProbeComplete(container.LivenessProbe) == false {
+					problem = "incomplete liveness probe"
+					if resultHealth[problem] == nil {
+						var containerSet ContainerSet
+						resultHealth[problem] = containerSet
+					}
+					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				}
+				if container.ReadinessProbe == nil {
+					problem = "no readiness probe"
+					if resultHealth[problem] == nil {
+						var containerSet ContainerSet
+						resultHealth[problem] = containerSet
+					}
+					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				} else if ProbeComplete(container.ReadinessProbe) == false {
+					problem = "incomplete readiness probe"
+					if resultHealth[problem] == nil {
+						var containerSet ContainerSet
+						resultHealth[problem] = containerSet
+					}
+					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				}
+			}
+		}
+	}
+	return resultHealth, nil
+}
+
+func ProbeComplete(probe *Probe) bool {
+	return probe.TimeoutSeconds > 0 &&
+		probe.PeriodSeconds > 0 &&
+		probe.SuccessThreshold > 0 &&
+		probe.InitialDelaySeconds > 0 &&
+		probe.FailureThreshold > 0
+}
