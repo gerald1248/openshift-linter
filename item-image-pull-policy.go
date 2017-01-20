@@ -1,9 +1,8 @@
 package main
 
-//deployment config without/with incomplete limits
 func ItemImagePullPolicy(config *Config, params LinterParams) (ResultMap, error) {
 	resultImagePullPolicy := make(ResultMap)
-	problem := "image_pull_policy_always"
+	problem := "image pull policy always"
 	for _, item := range config.Items {
 
 		//nested template with its own `metadata` and `spec` properties?

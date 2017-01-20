@@ -1,5 +1,10 @@
-//TODO: imagePullPolicy (disallow "always"), trigger (disallow after DEV)
 package main
+
+//TODO: refactor item-* functions to match interface
+type LinterItem interface {
+	Lint(*Config, *LinterParams) (ResultMap, error)
+	Name() string
+}
 
 type Config struct {
 	Kind                   string  `json:"kind"`
@@ -29,10 +34,25 @@ type Spec struct {
 }
 
 type Container struct {
-	Name            string     `json:"name"`
-	ImagePullPolicy string     `json:"imagePullPolicy"`
-	Env             []*EnvItem `json:"env"`
-	Resources       *Resources `json:"resources"`
+	Name            string           `json:"name"`
+	ImagePullPolicy string           `json:"imagePullPolicy"`
+	Env             []*EnvItem       `json:"env"`
+	Resources       *Resources       `json:"resources"`
+	LivenessProbe   *Probe           `json:"livenessProbe"`
+	ReadinessProbe  *Probe           `json:"readinessProbe"`
+	SecurityContext *SecurityContext `json:"securityContext"`
+}
+
+type Probe struct {
+	TimeoutSeconds      int `json:"timeoutSeconds"`
+	PeriodSeconds       int `json:"periodSeconds"`
+	SuccessThreshold    int `json:"successThreshold"`
+	InitialDelaySeconds int `json:"initialDelaySeconds"`
+	FailureThreshold    int `json:"failureThreshold"`
+}
+
+type SecurityContext struct {
+	Privileged bool `json:"privileged"`
 }
 
 type EnvItem struct {

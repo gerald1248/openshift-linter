@@ -3,7 +3,7 @@ package main
 func ItemLimits(config *Config, params LinterParams) (ResultMap, error) {
 	//deployment config without/with incomplete limits
 	resultLimits := make(ResultMap)
-	problem := ""
+	var problem string
 	for _, item := range config.Items {
 
 		//nested template with its own `metadata` and `spec` properties?
@@ -11,7 +11,7 @@ func ItemLimits(config *Config, params LinterParams) (ResultMap, error) {
 			for _, container := range item.Spec.Template.Spec.Containers {
 				name := container.Name
 				if container.Resources == nil {
-					problem = "no_resources"
+					problem = "no resources"
 					if resultLimits[problem] == nil {
 						var containerSet ContainerSet
 						resultLimits[problem] = containerSet
@@ -20,14 +20,14 @@ func ItemLimits(config *Config, params LinterParams) (ResultMap, error) {
 					continue
 				}
 				if container.Resources.Limits == nil || container.Resources.Limits.None() == true {
-					problem = "no_limits"
+					problem = "no limits"
 					if resultLimits[problem] == nil {
 						var containerSet ContainerSet
 						resultLimits[problem] = containerSet
 					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				} else if container.Resources.Limits.Complete() == false {
-					problem = "incomplete_limits"
+					problem = "incomplete limits"
 					if resultLimits[problem] == nil {
 						var containerSet ContainerSet
 						resultLimits[problem] = containerSet
@@ -35,14 +35,14 @@ func ItemLimits(config *Config, params LinterParams) (ResultMap, error) {
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 				if container.Resources.Requests == nil || container.Resources.Requests.None() == true {
-					problem = "no_requests"
+					problem = "no requests"
 					if resultLimits[problem] == nil {
 						var containerSet ContainerSet
 						resultLimits[problem] = containerSet
 					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				} else if container.Resources.Requests.Complete() == false {
-					problem = "incomplete_requests"
+					problem = "incomplete requests"
 					if resultLimits[problem] == nil {
 						var containerSet ContainerSet
 						resultLimits[problem] = containerSet

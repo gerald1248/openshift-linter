@@ -31,6 +31,8 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		params.EnvPattern = config.CustomEnvPattern
 	}
 
+	//run items
+	//TODO: livenessProbe, readinessProbe, privileged securityContext
 	resultSimilarKey, err := ItemSimilarKey(&config, params)
 	if err != nil {
 		return nil, err
@@ -51,13 +53,24 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 	if err != nil {
 		return nil, err
 	}
+	resultHealth, err := ItemHealth(&config, params)
+	if err != nil {
+		return nil, err
+	}
+	resultSecurity, err := ItemSecurity(&config, params)
+	if err != nil {
+		return nil, err
+	}
 
 	combined := make(CombinedResultMap)
-	combined["similar_key"] = resultSimilarKey
-	combined["invalid_key"] = resultInvalidKey
-	combined["invalid_name"] = resultInvalidName
+	combined["similar key"] = resultSimilarKey
+	combined["invalid key"] = resultInvalidKey
+	combined["invalid name"] = resultInvalidName
 	combined["limits"] = resultLimits
-	combined["image_pull_policy"] = resultImagePullPolicy
+	combined["image pull policy"] = resultImagePullPolicy
+	combined["health"] = resultHealth
+	combined["security"] = resultSecurity
+
 	return combined, nil
 }
 
