@@ -21,6 +21,7 @@ func main() {
 	namePattern := flag.String("name", "^[a-z0-9_-]+$", "pattern for names")
 	containerPattern := flag.String("container", "^[a-z0-9_-]+$", "pattern for containers")
 	envPattern := flag.String("env", "^[A-Z0-9_-]+$", "pattern for environment variables")
+
 	flag.Parse()
 	args := flag.Args()
 
@@ -29,6 +30,16 @@ func main() {
 	if len(args) == 0 {
 		serve(*host, *port)
 		return
+	}
+
+	if len(args) == 1 {
+		switch args[0] {
+		case "list":
+			ListLinterItems()
+			os.Exit(0)
+		default:
+			break
+		}
 	}
 
 	for _, arg := range args {
