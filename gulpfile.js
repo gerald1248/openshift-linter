@@ -100,7 +100,7 @@ gulp.task('test', function(callback) {
 
 gulp.task('fmt', function(callback) {
   //clumsily listing files so bindata.go is ignored
-  exec('gofmt -d openshift-linter.go types.go item-env.go item-image-pull-policy.go item-limits.go item-pattern.go item-health.go item-security.go process.go server.go preflight.go', function(err, stdout, stderr) {
+  exec('gofmt -d openshift-linter.go types.go item-env.go item-image-pull-policy.go item-limits.go item-pattern.go item-health.go item-security.go items.go process.go server.go preflight.go', function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);

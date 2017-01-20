@@ -31,45 +31,16 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		params.EnvPattern = config.CustomEnvPattern
 	}
 
-	//run items
-	//TODO: livenessProbe, readinessProbe, privileged securityContext
-	resultSimilarKey, err := ItemSimilarKey(&config, params)
-	if err != nil {
-		return nil, err
-	}
-	resultInvalidKey, err := ItemInvalidKey(&config, params)
-	if err != nil {
-		return nil, err
-	}
-	resultInvalidName, err := ItemInvalidName(&config, params)
-	if err != nil {
-		return nil, err
-	}
-	resultLimits, err := ItemLimits(&config, params)
-	if err != nil {
-		return nil, err
-	}
-	resultImagePullPolicy, err := ItemImagePullPolicy(&config, params)
-	if err != nil {
-		return nil, err
-	}
-	resultHealth, err := ItemHealth(&config, params)
-	if err != nil {
-		return nil, err
-	}
-	resultSecurity, err := ItemSecurity(&config, params)
-	if err != nil {
-		return nil, err
-	}
-
 	combined := make(CombinedResultMap)
-	combined["similar key"] = resultSimilarKey
-	combined["invalid key"] = resultInvalidKey
-	combined["invalid name"] = resultInvalidName
-	combined["limits"] = resultLimits
-	combined["image pull policy"] = resultImagePullPolicy
-	combined["health"] = resultHealth
-	combined["security"] = resultSecurity
+
+	items := Items()
+	for _, item := range items {
+		result, err := item.Lint(&config, params)
+		if err != nil {
+			return nil, err
+		}
+		combined[item.Name()] = result
+	}
 
 	return combined, nil
 }
