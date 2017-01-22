@@ -78,6 +78,16 @@ gulp.task('build-go', function(callback) {
   });
 });
 
+gulp.task('build-go-windows', function(callback) {
+	platform = "windows"
+	arch = "386"
+	exec('GOOS=windows GOARCH=386 go build' + raceSwitch, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    callback(err);
+  });
+});
+
 gulp.task('package-binary', function() {
   return gulp.src(['./openshift-linter', './openshift-linter.exe'], { base: '.' })
     .pipe(gulp.dest('package'))
@@ -116,7 +126,7 @@ gulp.task('vet', function(callback) {
 });
 
 gulp.task('clean-home', function() {
-  return del.sync(['./openshift-linter', './timeline.exe'], { force: true });
+  return del.sync(['./openshift-linter', './openshift-linter.exe'], { force: true });
 });
 
 gulp.task('clean-build', function() {
@@ -136,6 +146,23 @@ gulp.task('build-bindata', function(callback) {
   });
 });
 
+gulp.task('windows', function(callback) {
+  runSequence(
+		//skip clean-build to retain dist
+    'fmt',
+    'vet',
+    'build-js',
+    'build-css',
+    'build-html',
+    'build-bindata',
+    'build-go-windows',
+    'package-binary',
+    'dist',
+    'clean-home',
+		//skip tests as binary won't run
+    callback);
+});
+		
 gulp.task('watch', function() {
   gulp.watch(['./*.go', './src/**'], [
     'build'

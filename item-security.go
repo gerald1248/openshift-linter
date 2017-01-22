@@ -17,14 +17,9 @@ func (is *ItemSecurity) Lint(config *Config, params LinterParams) (ResultMap, er
 				name := container.Name
 				if container.SecurityContext != nil {
 					if container.SecurityContext.Privileged == true {
-						var containerSet ContainerSet
-						resultSecurity[problem] = containerSet
+						resultSecurity[problem] = append(resultSecurity[problem],
+							ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 					}
-					resultSecurity[problem] = append(
-						resultSecurity[problem],
-						ContainerSpec{item.Metadata.Namespace,
-							item.Metadata.Name,
-							name})
 				}
 			}
 		}

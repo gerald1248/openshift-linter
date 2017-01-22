@@ -90,13 +90,6 @@ func ResultEnv(config *Config, params LinterParams) (ResultMap, error) {
 			for _, container := range item.Spec.Template.Spec.Containers {
 				name := container.Name
 				for _, envItem := range container.Env {
-
-					//key doesn't exist: create array
-					if resultEnv[envItem.Name] == nil {
-						var containerSet ContainerSet
-						resultEnv[envItem.Name] = containerSet
-					}
-
 					resultEnv[envItem.Name] = append(resultEnv[envItem.Name], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 			}

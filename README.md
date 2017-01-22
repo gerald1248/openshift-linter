@@ -101,3 +101,11 @@ $ go get -u
 With that, the workspace is ready. The default task (triggered by `gulp`) compiles `openshift-linter` from source, runs (minimal for now) tests, checks the source format, generates a binary in `package` and writes out a distributable zip for your operating system.
 
 You can also run `gulp build`, `gulp test`, `gulp watch`, etc. individually if you wish.
+
+Cross-compile for Windows
+-------------------------
+To cross-compile Windows binaries on Linux or Mac, enter:
+```
+$ GOOS=windows GOARCH=amd64 go install
+$ gulp windows
+```

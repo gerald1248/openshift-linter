@@ -20,41 +20,21 @@ func (il *ItemLimits) Lint(config *Config, params LinterParams) (ResultMap, erro
 				name := container.Name
 				if container.Resources == nil {
 					problem = "no resources"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 					continue
 				}
 				if container.Resources.Limits == nil || container.Resources.Limits.None() == true {
 					problem = "no limits"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				} else if container.Resources.Limits.Complete() == false {
 					problem = "incomplete limits"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 				if container.Resources.Requests == nil || container.Resources.Requests.None() == true {
 					problem = "no requests"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				} else if container.Resources.Requests.Complete() == false {
 					problem = "incomplete requests"
-					if resultLimits[problem] == nil {
-						var containerSet ContainerSet
-						resultLimits[problem] = containerSet
-					}
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 			}
