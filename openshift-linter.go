@@ -12,6 +12,7 @@ func main() {
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage: ./%s [<JSON file> [<JSON file>]]\n", filepath.Base(os.Args[0]))
 		flag.PrintDefaults()
+		fmt.Fprintf(os.Stderr, "Commands:\n  list\tPrint list of available checks\n")
 		os.Exit(0)
 	}
 

@@ -14,17 +14,19 @@ Usage
 ```
 Usage: ./openshift-linter [<JSON file> [<JSON file>]]
   -container string
-      pattern for containers (default "^[a-z0-9_-]+$")
+    	pattern for containers (default "^[a-z0-9_-]+$")
   -env string
-      pattern for environment variables (default "^[A-Z0-9_-]+$")
+    	pattern for environment variables (default "^[A-Z0-9_-]+$")
   -n string
-      hostname (default "localhost")
+    	hostname (default "localhost")
   -name string
-      pattern for names (default "^[a-z0-9_-]+$")
+    	pattern for names (default "^[a-z0-9_-]+$")
   -namespace string
-      pattern for namespaces/projects (default "^[a-z0-9_-]*$")
+    	pattern for namespaces/projects (default "^[a-z0-9_-]*$")
   -p int
-      listen on port (default 8000)
+    	listen on port (default 8000)
+Commands:
+  list	Print list of available checks
 ```
 
 The two main use cases are:

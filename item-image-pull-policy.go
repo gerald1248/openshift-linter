@@ -10,7 +10,7 @@ func (iipp *ItemImagePullPolicy) Name() string {
 
 func (iipp *ItemImagePullPolicy) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	resultImagePullPolicy := make(ResultMap)
-	problem := "image pull policy always"
+	problem := "always"
 	for _, item := range config.Items {
 		if item.Spec != nil && item.Spec.Template != nil {
 			for _, container := range item.Spec.Template.Spec.Containers {
