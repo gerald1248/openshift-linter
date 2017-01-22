@@ -19,32 +19,16 @@ func (is *ItemHealth) Lint(config *Config, params LinterParams) (ResultMap, erro
 				name := container.Name
 				if container.LivenessProbe == nil {
 					problem = "no liveness probe"
-					if resultHealth[problem] == nil {
-						var containerSet ContainerSet
-						resultHealth[problem] = containerSet
-					}
 					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				} else if ProbeComplete(container.LivenessProbe) == false {
 					problem = "incomplete liveness probe"
-					if resultHealth[problem] == nil {
-						var containerSet ContainerSet
-						resultHealth[problem] = containerSet
-					}
 					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 				if container.ReadinessProbe == nil {
 					problem = "no readiness probe"
-					if resultHealth[problem] == nil {
-						var containerSet ContainerSet
-						resultHealth[problem] = containerSet
-					}
 					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				} else if ProbeComplete(container.ReadinessProbe) == false {
 					problem = "incomplete readiness probe"
-					if resultHealth[problem] == nil {
-						var containerSet ContainerSet
-						resultHealth[problem] = containerSet
-					}
 					resultHealth[problem] = append(resultHealth[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 			}

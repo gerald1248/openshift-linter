@@ -16,10 +16,6 @@ func (iipp *ItemImagePullPolicy) Lint(config *Config, params LinterParams) (Resu
 			for _, container := range item.Spec.Template.Spec.Containers {
 				name := container.Name
 				if container.ImagePullPolicy == "Always" {
-					if resultImagePullPolicy[problem] == nil {
-						var containerSet ContainerSet
-						resultImagePullPolicy[problem] = containerSet
-					}
 					resultImagePullPolicy[problem] = append(resultImagePullPolicy[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 			}
