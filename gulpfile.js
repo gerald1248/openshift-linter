@@ -78,8 +78,8 @@ gulp.task('build-go', function(callback) {
   });
 });
 
-gulp.task('build-go-windows', function(callback) {
-	platform = "windows"
+gulp.task('build-go-win32', function(callback) {
+	platform = "win32"
 	arch = "386"
 	exec('GOOS=windows GOARCH=386 go build' + raceSwitch, function(err, stdout, stderr) {
     console.log(stdout);
@@ -146,7 +146,7 @@ gulp.task('build-bindata', function(callback) {
   });
 });
 
-gulp.task('windows', function(callback) {
+gulp.task('build-win32', function(callback) {
   runSequence(
 		//skip clean-build to retain dist
     'fmt',
@@ -155,7 +155,7 @@ gulp.task('windows', function(callback) {
     'build-css',
     'build-html',
     'build-bindata',
-    'build-go-windows',
+    'build-go-win32',
     'package-binary',
     'dist',
     'clean-home',
