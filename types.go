@@ -8,6 +8,7 @@ type LinterItem interface {
 type Config struct {
 	Kind                   string  `json:"kind"`
 	Items                  []*Item `json:"items"`
+	CustomNamespaceLabel   string  `json:"customNamespaceLabel"`
 	CustomNamespacePattern string  `json:"customNamespacePattern"`
 	CustomNamePattern      string  `json:"customNamePattern"`
 	CustomContainerPattern string  `json:"customContainerPattern"`
@@ -22,8 +23,9 @@ type Item struct {
 }
 
 type Metadata struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
+	Labels    map[string]string `json:"labels"`
+	Name      string            `json:"name"`
+	Namespace string            `json:"namespace"`
 }
 
 type Spec struct {
@@ -99,6 +101,7 @@ type ResultItem struct {
 type CombinedResultMap map[string]ResultMap
 
 type LinterParams struct {
+	NamespaceLabel   string
 	NamespacePattern string
 	NamePattern      string
 	ContainerPattern string

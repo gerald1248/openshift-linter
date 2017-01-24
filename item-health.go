@@ -38,9 +38,14 @@ func (is *ItemHealth) Lint(config *Config, params LinterParams) (ResultMap, erro
 }
 
 func ProbeComplete(probe *Probe) bool {
-	return probe.TimeoutSeconds > 0 &&
-		probe.PeriodSeconds > 0 &&
-		probe.SuccessThreshold > 0 &&
-		probe.InitialDelaySeconds > 0 &&
-		probe.FailureThreshold > 0
+	var count int
+
+	//set the bar low to avoid OpenShift version hassle: one value will do
+	var a = []int{probe.TimeoutSeconds, probe.PeriodSeconds, probe.SuccessThreshold, probe.InitialDelaySeconds, probe.FailureThreshold}
+	for _, v := range a {
+		if v > 0 {
+			count++
+		}
+	}
+	return count > 0
 }

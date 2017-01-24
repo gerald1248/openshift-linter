@@ -39,10 +39,14 @@ var App = function() {
       return;
     }
 
+    var customNamespaceLabel = $('#namespace-label').val();
     var customNamespacePattern = $('#namespace-pattern').val();
     var customNamePattern = $('#name-pattern').val();
     var customContainerPattern = $('#container-pattern').val();
     var customEnvPattern = $('#env-pattern').val();
+    if (customNamespaceLabel.length > 0) {
+      obj.customNamespaceLabel = customNamespaceLabel;
+    }
     if (customNamespacePattern.length > 0) {
       obj.customNamespacePattern = customNamespacePattern;
     }
