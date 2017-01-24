@@ -18,6 +18,7 @@ func main() {
 
 	host := flag.String("n", "localhost", "hostname")
 	port := flag.Int("p", 8000, "listen on port")
+	namespaceLabel := flag.String("namespace-label", "env", "metadata.labels key denoting namespace")
 	namespacePattern := flag.String("namespace", "^[a-z0-9_-]*$", "pattern for namespaces/projects")
 	namePattern := flag.String("name", "^[a-z0-9_-]+$", "pattern for names")
 	containerPattern := flag.String("container", "^[a-z0-9_-]+$", "pattern for containers")
@@ -45,7 +46,7 @@ func main() {
 
 	for _, arg := range args {
 		start := time.Now()
-		msg, code := processFile(arg, LinterParams{*namespacePattern, *namePattern, *containerPattern, *envPattern})
+		msg, code := processFile(arg, LinterParams{*namespaceLabel, *namespacePattern, *namePattern, *containerPattern, *envPattern})
 		secs := time.Since(start).Seconds()
 
 		if code > 0 {

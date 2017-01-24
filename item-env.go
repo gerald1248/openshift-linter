@@ -84,7 +84,6 @@ func ResultEnv(config *Config, params LinterParams) (ResultMap, error) {
 	//environment variables
 	resultEnv := make(ResultMap)
 	for _, item := range config.Items {
-
 		//nested template with its own `metadata` and `spec` properties?
 		if item.Spec != nil && item.Spec.Template != nil {
 			for _, container := range item.Spec.Template.Spec.Containers {

@@ -50,6 +50,9 @@
                   </tr>
                 </thead>
                 <tr>
+                  <td>Namespace label</td>
+                  <td><input id="namespace-label" placeholder="env"></input></td>
+                <tr>
                   <td>Namespace pattern</td>
                   <td><input id="namespace-pattern" placeholder="^[a-z0-9_-]*$"></input></td>
                 </tr>
@@ -78,7 +81,7 @@
             </div>
             <div>
               <div>
-                <input type="text" class="form-control" maxlength="750000" id="data"></input>
+                <input type="text" class="form-control" maxlength="750000" id="data" placeholder="`oc export dc --all-namespaces`"></input>
                 <button id="update-button" class="btn btn-default">Update</button>
                 <button id="copy-button" type="button" class="btn btn-default" data-clipboard-action="copy" data-clipboard-target="#data">Copy to clipboard</button>
                 <span id="error"></span>

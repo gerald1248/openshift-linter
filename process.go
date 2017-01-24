@@ -14,7 +14,14 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		return nil, errors.New(fmt.Sprintf("can't unmarshal data: %v", err))
 	}
 
+	//try to guess namespace from
+	preprocessConfig(&config, params)
+
 	//for POST req access, pick up custom settings from JSON obj
+	if config.CustomNamespaceLabel != "" {
+		params.NamespaceLabel = config.CustomNamespaceLabel
+	}
+
 	if config.CustomNamespacePattern != "" {
 		params.NamespacePattern = config.CustomNamespacePattern
 	}
