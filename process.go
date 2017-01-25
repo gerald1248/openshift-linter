@@ -49,6 +49,8 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		combined[item.Name()] = result
 	}
 
+	combined["summary"] = summary(&config, &combined)
+
 	return combined, nil
 }
 

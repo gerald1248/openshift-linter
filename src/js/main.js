@@ -80,10 +80,55 @@ var App = function() {
     });
   };
 
+  //draw chart
+  this.drawChart = function(obj) {
+    var ctx = $('#canvas01');
+    var summary = obj.summary;
+    
+    var values = [
+      (summary.g) ? summary.g.length : 0,
+      (summary.ga) ? summary.ga.length : 0,
+      (summary.a) ? summary.a.length : 0,
+      (summary.ar) ? summary.ar.length : 0,
+      (summary.r) ? summary.r.length : 0,
+    ];
+
+    var chart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ["No issues", "1 issue", "2 issues", "3 issues", "4 or more issues"],
+        datasets: [
+          {
+            data: values,
+            backgroundColor: [
+              'rgba(0, 255, 0, 1.0)',
+              'rgba(127, 255, 0, 1.0)',
+              'rgba(255, 255, 0, 1.0)',
+              'rgba(255, 127, 0, 1.0)',
+              'rgba(255, 0, 0, 1.0)'
+            ],
+            borderColor: [
+              'rgba(0, 255, 0, 1.0)',
+              'rgba(127, 255, 0, 1.0)',
+              'rgba(255, 255, 0, 1.0)',
+              'rgba(255, 127, 0, 1.0)',
+              'rgba(255, 0, 0, 1.0)'
+            ],
+            borderWidth: 1            
+          }
+        ]
+      },
+      options: { responsive: false }
+    });
+  };
+
   //present report JSON in tabular form
   this.formatReport = function(obj) {
     var buffer = "";
     for (key in obj) {
+      if (key === "summary") {
+        continue;
+      }
       for (subkey in obj[key]) {
         var list = obj[key][subkey];
         var len = list.length;
@@ -152,6 +197,7 @@ var App = function() {
       $('#report')[0].innerHTML = "No data";
     }
 
+    this.drawChart(obj);
     $('#report')[0].innerHTML = this.formatReport(obj);
   };
 
