@@ -11,7 +11,7 @@ As it's very early days the focus is on `deploymentConfig` objects.
 
 <img src="screenshots/openshift-linter.png" width="512" alt="Screenshot of the OpenShift Linter GUI"/>
 
-**Fig. 2** OpenShift Linter GUI
+**Fig. 2** OpenShift Linter GUI - use `/api/v1` instead of `/oapi/v1` to call Kubernetes directly
 
 Usage
 -----
@@ -106,10 +106,14 @@ With that, the workspace is ready. The default task (triggered by `gulp`) compil
 
 You can also run `gulp build`, `gulp test`, `gulp watch`, etc. individually if you wish.
 
+How do I create my own checks?
+------------------------------
+Add types that conform to the `LinterItem` interface, then register them in `items.go`.
+
 Cross-compile for Windows
 -------------------------
 To cross-compile Windows binaries on Linux or Mac, enter:
 ```
 $ GOOS=windows GOARCH=amd64 go install
-$ gulp windows
+$ gulp build-win32
 ```
