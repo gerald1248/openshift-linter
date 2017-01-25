@@ -10,3 +10,4 @@ exclude
 package
 bower_components
 ignore
+dist/
