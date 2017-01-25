@@ -1,9 +1,9 @@
 OpenShift Linter
 ================
 
-<img src="screenshots/piechart.png" width="300" height="300" alt="Summary view"/>
+<img src="screenshots/piechart.png" width="300" alt="Summary view"/>
 
-** Fig. 1** Summary
+**Fig. 1** Summary
 
 This is a utility for OpenShift users/admins who want to know if certain (very basic) rules have been followed. You can also specify naming conventions for namespaces (i.e. projects), names, containers and environment variables.
 
