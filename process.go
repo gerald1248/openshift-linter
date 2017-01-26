@@ -8,13 +8,19 @@ import (
 )
 
 func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) {
+	//make sure config objects are presented as a list
+	err := makeList(&bytes)
+	if err != nil {
+		return nil, err
+	}
+
 	var config Config
 
 	if err := json.Unmarshal(bytes, &config); err != nil {
 		return nil, errors.New(fmt.Sprintf("can't unmarshal data: %v", err))
 	}
 
-	//try to guess namespace from
+	//try to guess namespace from configurable metadata field
 	preprocessConfig(&config, params)
 
 	//for POST req access, pick up custom settings from JSON obj

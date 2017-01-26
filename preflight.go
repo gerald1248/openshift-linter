@@ -9,6 +9,8 @@ import (
 	"unicode/utf8"
 )
 
+// ensure YAML as well as JSON can be read
+// applies only to file-based processing; the server only accepts JSON
 func preflightAsset(a *[]byte, file string) error {
 	if len(*a) == 0 {
 		return errors.New("input must not be empty")
