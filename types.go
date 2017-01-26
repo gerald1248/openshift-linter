@@ -107,3 +107,7 @@ type LinterParams struct {
 	ContainerPattern string
 	EnvPattern       string
 }
+
+type MinimalObject struct {
+	Kind string
+}
