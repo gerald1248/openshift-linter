@@ -12,7 +12,7 @@ func TestMetadata(t *testing.T) {
 }
 
 func TestResourceConstraint(t *testing.T) {
-	validConstraint := &ResourceConstraint{"200m", "1000Mi"} 
+	validConstraint := &ResourceConstraint{"200m", "1000Mi"}
 	invalidConstraint := &ResourceConstraint{"1000Mi", "200m"}
 	incompleteConstraint := &ResourceConstraint{"1000Mi", ""}
 
