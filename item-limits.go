@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type ItemLimits struct {
 	name string
 }
@@ -23,18 +25,27 @@ func (il *ItemLimits) Lint(config *Config, params LinterParams) (ResultMap, erro
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 					continue
 				}
-				if container.Resources.Limits == nil || container.Resources.Limits.None() == true {
+				limits := container.Resources.Limits
+				if limits == nil || limits.None() == true {
 					problem = "no limits"
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				} else if container.Resources.Limits.Complete() == false {
+				} else if limits.Complete() == false {
 					problem = "incomplete limits"
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				} else if limits.Valid() == false {
+					problem = fmt.Sprintf("invalid limits pair %s (CPU) and %s (Memory)", limits.CPU, limits.Memory)
+					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
-				if container.Resources.Requests == nil || container.Resources.Requests.None() == true {
+
+				requests := container.Resources.Requests
+				if requests == nil || requests.None() == true {
 					problem = "no requests"
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
-				} else if container.Resources.Requests.Complete() == false {
+				} else if requests.Complete() == false {
 					problem = "incomplete requests"
+					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
+				} else if requests.Valid() == false {
+					problem = fmt.Sprintf("invalid requests pair %s (cpu) and %s (memory)", requests.CPU, requests.Memory)
 					resultLimits[problem] = append(resultLimits[problem], ContainerSpec{item.Metadata.Namespace, item.Metadata.Name, name})
 				}
 			}

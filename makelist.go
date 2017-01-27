@@ -19,11 +19,7 @@ func makeList(a *[]byte) error {
 	switch obj.Kind {
 	case "List":
 		return nil
-	case "DeploymentConfig":
-		fallthrough
-	case "BuildConfig":
-		fallthrough
-	case "Pod":
+	case "DeploymentConfig", "BuildConfig", "Pod":
 		slices := [][]byte{[]byte(`{"kind":"List","items":[`), *a, []byte(`]}`)}
 		b := bytes.Join(slices, []byte{})
 		*a = b
