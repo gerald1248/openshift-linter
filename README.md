@@ -38,7 +38,7 @@ $ ./openshift-linter i-contain-multitudes.json
 
 * Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
 
-When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole. Conversely, if all namespaces specify a member of the 00 Section, but the rest doesn't matter, `00[0-9]` is fine, though Fleming enthusiasts will no doubt insist on `OO[0-9]`.
+When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole.
 
 Listing
 -------
@@ -63,13 +63,37 @@ Then clone `github.com/gerald1248/openshift-linter`. The folder structure below 
 src
 └── github.com
     └── gerald1248
-        └── openshift-linter
-            ├── README.md
-            ├── gulpfile.js
-            ├── openshift-linter.go
-            ├── package.json
-            ├── process.go
-            └── server.go
+        └── openshift-linter
+            ├── LICENSE
+            ├── README.md
+            ├── bindata.go
+            ├── bower.json
+            ├── bower_components
+            ├── contributors.txt
+            ├── data
+            ├── gulpfile.js
+            ├── item-env.go
+            ├── item-health.go
+            ├── item-image-pull-policy.go
+            ├── item-limits.go
+            ├── item-pattern.go
+            ├── item-security.go
+            ├── items.go
+            ├── makelist.go
+            ├── openshift-linter.go
+            ├── package
+            ├── package.json
+            ├── preflight.go
+            ├── preflight_test.go
+            ├── preprocess.go
+            ├── process.go
+            ├── screenshots
+            ├── server.go
+            ├── src
+            ├── static
+            ├── summary.go
+            ├── types.go
+            └── types_test.go
 ```
 
 Next, install Node.js with npm using your package manager. `cd` into the working directory `openshift-linter` and enter:
