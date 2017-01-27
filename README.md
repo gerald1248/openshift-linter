@@ -3,7 +3,7 @@ OpenShift Linter
 
 This is a utility for OpenShift users/admins who want to know if certain (very basic) rules have been followed. You can also specify naming conventions for namespaces (i.e. projects), names, containers and environment variables.
 
-As it's very early days the focus is on `deploymentConfig` objects.
+As it's very early days the focus is on `DeploymentConfig` objects.
 
 <img src="screenshots/openshift-linter.png" width="512" alt="Screenshot of the OpenShift Linter GUI"/>
 
