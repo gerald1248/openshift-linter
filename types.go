@@ -1,5 +1,9 @@
 package main
 
+import (
+	"regexp"
+)
+
 type LinterItem interface {
 	Lint(*Config, LinterParams) (ResultMap, error)
 	Name() string
@@ -81,6 +85,22 @@ type ResourceConstraint struct {
 
 func (r *ResourceConstraint) Complete() bool {
 	return len(r.CPU) > 0 && len(r.Memory) > 0
+}
+
+func (r *ResourceConstraint) Valid() bool {
+	//see Kubernetes pkg/api/validation/validation.go ll. 1300f.
+	reCpu := regexp.MustCompile(`^[0-9]+m?$`)
+	reMemory := regexp.MustCompile(`^[0-9]+(k|M|G|T|P|E|Ki|Mi|Gi|Ti|Pi|Ei)?$`)
+
+	if len(r.CPU) > 0 && reCpu.FindStringIndex(r.CPU) == nil {
+		return false
+	}
+
+	if len(r.Memory) > 0 && reMemory.FindStringIndex(r.Memory) == nil {
+		return false
+	}
+
+	return true
 }
 
 func (r *ResourceConstraint) None() bool {
