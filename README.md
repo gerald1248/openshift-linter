@@ -12,7 +12,7 @@ As it's very early days the focus is on `DeploymentConfig` objects.
 Usage
 -----
 ```
-Usage: ./openshift-linter [<JSON file> [<JSON file>]]
+Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
   -container string
     	pattern for containers (default "^[a-z0-9_-]+$")
   -env string
