@@ -57,7 +57,9 @@ type Probe struct {
 }
 
 type SecurityContext struct {
-	Privileged bool `json:"privileged"`
+	Privileged   bool  `json:"privileged"`
+	RunAsNonRoot bool  `json:"runAsNonRoot"` //currently not verifiable: property not found in OSE3.1, so can't enforce `true`
+	RunAsUser    int64 `json:"runasUser"`    //currently not verifiable: property not found in OSE3.1, so can't enforce non-root (i.e. >0)
 }
 
 type EnvItem struct {
@@ -126,8 +128,13 @@ type LinterParams struct {
 	NamePattern      string
 	ContainerPattern string
 	EnvPattern       string
+	Output           string
 }
 
 type MinimalObject struct {
 	Kind string
+}
+
+type Table struct {
+	Row []string
 }
