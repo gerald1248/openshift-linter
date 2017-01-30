@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/ghodss/yaml"
 	"io/ioutil"
 )
 
@@ -60,29 +61,43 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 	return combined, nil
 }
 
-func processFile(path string, params LinterParams) (string, int) {
+func processFile(path string, params LinterParams) (string, error) {
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
-		return fmt.Sprintf("can't read %s", path), 1
+		return "", errors.New(fmt.Sprintf("can't read %s: %v", path, err))
 	}
 
 	//preflight with optional conversion from YAMLs
 	err = preflightAsset(&bytes, path)
 	if err != nil {
-		return fmt.Sprintf("%s failed preflight check: %v", path, err), 1
+		return "", errors.New(fmt.Sprintf("%s failed preflight check: %v", path, err))
 	}
 
 	combinedResultMap, err := processBytes(bytes, params)
 
 	if err != nil {
-		return fmt.Sprintf("can't process %s: %s", path, err), 1
+		return "", errors.New(fmt.Sprintf("can't process %s: %s", path, err))
 	}
 
-	json, err := json.MarshalIndent(combinedResultMap, "", "  ")
+	switch params.Output {
+	case "json":
+		json, err := json.MarshalIndent(combinedResultMap, "", "  ")
 
-	if err != nil {
-		return fmt.Sprintf("can't marshal JSON %v", combinedResultMap), 1
+		if err != nil {
+			return "", errors.New(fmt.Sprintf("can't marshal JSON %v", combinedResultMap))
+		}
+
+		return string(json), nil
+	case "yaml":
+		yaml, err := yaml.Marshal(combinedResultMap)
+
+		if err != nil {
+			return "", errors.New(fmt.Sprintf("can't marshal YAML %v", combinedResultMap))
+		}
+
+		return string(yaml), nil
+	case "md":
+		return markdown(&combinedResultMap)
 	}
-
-	return string(json), 0
+	return "", errors.New(fmt.Sprintf("unsupported output format %s", params.Output))
 }

@@ -12,7 +12,7 @@ As it's very early days the focus is on `DeploymentConfig` objects.
 Usage
 -----
 ```
-Usage: ./openshift-linter [<JSON file> [<JSON file>]]
+Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
   -container string
     	pattern for containers (default "^[a-z0-9_-]+$")
   -env string
@@ -23,6 +23,10 @@ Usage: ./openshift-linter [<JSON file> [<JSON file>]]
     	pattern for names (default "^[a-z0-9_-]+$")
   -namespace string
     	pattern for namespaces/projects (default "^[a-z0-9_-]*$")
+  -namespace-label string
+    	metadata.labels key denoting namespace (default "env")
+  -o string
+    	output format (json, yaml or md) (default "md")
   -p int
     	listen on port (default 8000)
 Commands:
@@ -37,6 +41,21 @@ $ ./openshift-linter i-contain-multitudes.json
 ```
 
 * Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
+
+On the command line, the sample configuration `data/sample-mix.min.json` produces the following markdown output:
+```markdown
+image pull policy
+-----------------
+
+### always
+
+|**Namespace**|**Name**               |**Container**   |
+|:------------|:----------------------|:---------------|
+|samples      |ruby-hello-one-error   |ruby-hello-world|
+|samples      |ruby-hello-two-errors  |ruby-hello-world|
+|samples      |ruby-hello-three-errors|ruby-hello-world|
+|samples      |ruby-hello-four-errors |ruby-hello-world|
+```
 
 When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole.
 
