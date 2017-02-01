@@ -7,11 +7,15 @@ import (
 )
 
 type ItemInvalidName struct {
-	name string
+	name, description string
 }
 
 func (iin *ItemInvalidName) Name() string {
 	return iin.name
+}
+
+func (iin *ItemInvalidName) Description() string {
+	return iin.description
 }
 
 func (iin *ItemInvalidName) Lint(config *Config, params LinterParams) (ResultMap, error) {
