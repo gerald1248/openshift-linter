@@ -48,8 +48,7 @@ Generate report at http://localhost:8421/openshift-linter/report
 ```
 * Open the GUI in the browser at the second URL shown
 
-Command line use
-----------------
+### Command line use
 
 On the command line, the sample configuration `data/sample-mix.min.json` produces the following markdown output (excerpt):
 
@@ -71,8 +70,10 @@ To write out YAML or JSON instead, use the `-o` switch specifying either `json` 
 
 When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole.
 
-GUI use
--------
+### Server use
+Note that all inputs and outputs in server mode are JSON only. You can supply parameters by adding `customNamespaceLabel`, `customNamespacePattern`, `customNamePattern`, `customContainerPattern`, `customEnvPattern` properties to the JSON object passed to the server.
+
+### GUI use
 Open the URL shown in your browser to fetch configuration data from your OpenShift master. If you've already created a report, you can sideload and create the browser view with charts that way. You can supply the parameters usually specified on the command line in the Settings pane.
 
 Listing
