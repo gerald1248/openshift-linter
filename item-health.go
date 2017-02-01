@@ -1,11 +1,15 @@
 package main
 
 type ItemHealth struct {
-	name string
+	name, description string
 }
 
 func (ih *ItemHealth) Name() string {
 	return ih.name
+}
+
+func (ih *ItemHealth) Description() string {
+	return ih.description
 }
 
 func (is *ItemHealth) Lint(config *Config, params LinterParams) (ResultMap, error) {

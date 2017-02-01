@@ -126,7 +126,6 @@ var App = function() {
 
 	//draw chart (issue type)
 	this.drawChartIssueType = function(obj) {
-		console.log(obj);
 		var ctx = $('#canvas02');
 		var labels = [], lengths = [], colors = [];
 		var max = 0;
@@ -153,9 +152,10 @@ var App = function() {
 				//need to invert value as 0 == red and 120 == green
 				//however, bars that are displayed are by definition not 0-issue-bars
 				//so stop at 100
-				var val = 100*len/max
-					var inv = Math.abs(val - 100)
-					colors.push('hsl(' + inv + ',100%,50%)');
+				var val = 100*len/max;
+				var inv = Math.abs(val - 100);
+				var rounded = Math.round(inv)
+				colors.push('hsl(' + rounded + ',100%,50%)');
 			}
 		}
 
@@ -173,10 +173,6 @@ var App = function() {
 			},
 			options: {
 				responsive: false,
-				scales: {
-					yAxes: [],
-					xAxes: []
-				},
 				legend: {
 					display: false
 				}

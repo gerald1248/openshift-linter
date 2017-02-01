@@ -1,11 +1,15 @@
 package main
 
 type ItemSecurity struct {
-	name string
+	name, description string
 }
 
 func (is *ItemSecurity) Name() string {
 	return is.name
+}
+
+func (is *ItemSecurity) Description() string {
+	return is.description
 }
 
 func (is *ItemSecurity) Lint(config *Config, params LinterParams) (ResultMap, error) {

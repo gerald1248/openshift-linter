@@ -3,11 +3,15 @@ package main
 import "fmt"
 
 type ItemLimits struct {
-	name string
+	name, description string
 }
 
 func (il *ItemLimits) Name() string {
 	return il.name
+}
+
+func (il *ItemLimits) Description() string {
+	return il.description
 }
 
 func (il *ItemLimits) Lint(config *Config, params LinterParams) (ResultMap, error) {

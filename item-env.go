@@ -10,11 +10,15 @@ import (
 
 //similar key linter
 type ItemSimilarKey struct {
-	name string
+	name, description string
 }
 
 func (isk *ItemSimilarKey) Name() string {
 	return isk.name
+}
+
+func (isk *ItemSimilarKey) Description() string {
+	return isk.description
 }
 
 func (isk *ItemSimilarKey) Lint(config *Config, params LinterParams) (ResultMap, error) {
@@ -49,11 +53,15 @@ func (isk *ItemSimilarKey) Lint(config *Config, params LinterParams) (ResultMap,
 
 //invalid key linter
 type ItemInvalidKey struct {
-	name string
+	name, description string
 }
 
 func (iik *ItemInvalidKey) Name() string {
 	return iik.name
+}
+
+func (iik *ItemInvalidKey) Description() string {
+	return iik.description
 }
 
 func (iik *ItemInvalidKey) Lint(config *Config, params LinterParams) (ResultMap, error) {

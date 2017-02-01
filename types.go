@@ -7,6 +7,7 @@ import (
 type LinterItem interface {
 	Lint(*Config, LinterParams) (ResultMap, error)
 	Name() string
+	Description() string
 }
 
 type Config struct {
@@ -39,6 +40,7 @@ type Spec struct {
 }
 
 type Container struct {
+	Image           string           `json:"image"`
 	Name            string           `json:"name"`
 	ImagePullPolicy string           `json:"imagePullPolicy"`
 	Env             []*EnvItem       `json:"env"`
