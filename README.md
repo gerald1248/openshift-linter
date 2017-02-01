@@ -33,16 +33,26 @@ Commands:
   list	Print list of available checks
 ```
 
-The two main use cases are:
+The main use cases are:
 
 * You already have a bunch of configuration files (the output of `oc export dc --all-namespaces`, say, assuming you're lucky enough to be `cluster-admin`)
 ```
 $ ./openshift-linter i-contain-multitudes.json
 ```
+* You wish to generate reports by posting JSON configuration files to the server at the URL shown
+```
+$ ./openshift-linter -p 8421
+Listening on port 8421
+POST JSON sources to http://localhost:8421/openshift-linter
+Generate report at http://localhost:8421/openshift-linter/report
+```
+* Open the GUI in the browser at the second URL shown
 
-* Run `./openshift-linter` and open the GUI at `http://localhost:8000/openshift-linter/report` (configure hostname and port using the -n and -p switches, respectively)
+Command line use
+----------------
 
-On the command line, the sample configuration `data/sample-mix.min.json` produces the following markdown output:
+On the command line, the sample configuration `data/sample-mix.min.json` produces the following markdown output (excerpt):
+
 ```markdown
 image pull policy
 -----------------
@@ -57,25 +67,33 @@ image pull policy
 |samples      |ruby-hello-four-errors |ruby-hello-world|
 ```
 
+To write out YAML or JSON instead, use the `-o` switch specifying either `json` or `yaml`.
+
 When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole.
+
+GUI use
+-------
+Open the URL shown in your browser to fetch configuration data from your OpenShift master. If you've already created a report, you can sideload and create the browser view with charts that way. You can supply the parameters usually specified on the command line in the Settings pane.
 
 Listing
 -------
-To print a list of the available linter items, enter:
+To print a list of the available linter items with descriptions, enter:
 ```
 $ ./openshift-linter list
-health
-image pull policy
-invalid key
-invalid name
-limits
-security
-similar key
+|**Item**          |**Description**                                            |
+|:-----------------|:----------------------------------------------------------|
+|env name collision|near-identical env names                                   |
+|env name invalid  |env name doesn't match predefined regex                    |
+|health            |health check missing or incomplete                         |
+|image pull policy |policy 'Always' or ':latest' image specified               |
+|limits            |resource limits missing, incomplete or invalid             |
+|name invalid      |namespace, name or container doesn't match predefined regex|
+|security          |privileged security context                                |
 ```
 
 Build
 -----
-Install Go using one of the installers available from `https://golang.org/dl/` and set up your `$GOPATH` and `$GOBIN` as you see fit (exporting `GOPATH=~/golang` and `GOBIN=$GOPATH/bin` in your `.bash_profile` will do).
+Install Go using one of the installers available from `https://golang.org/dl/` and set up your `$GOPATH` and `$GOBIN` as you see fit (exporting `GOPATH=~/golang` and `GOBIN=$GOPATH/bin` in your `.bash_profile` will do). Windows users should use Git Bash or a similar, unixy shell.
 
 Then clone `github.com/gerald1248/openshift-linter`. The folder structure below `$GOPATH` should look roughly as follows:
 ```
@@ -141,7 +159,7 @@ $ go get -u github.com/jteeuwen/go-bindata/...
 $ go get -u
 ```
 
-With that, the workspace is ready. The default task (triggered by `gulp`) compiles `openshift-linter` from source, runs (minimal for now) tests, checks the source format, generates a binary in `package` and writes out a distributable zip for your operating system.
+With that, the workspace is ready. The default task (triggered by `gulp`) compiles `openshift-linter` from source, runs tests, checks the source format, generates a binary in `package` and writes out a distributable zip for your operating system.
 
 You can also run `gulp build`, `gulp test`, `gulp watch`, etc. individually if you wish.
 
