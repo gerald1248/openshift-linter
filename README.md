@@ -33,9 +33,9 @@ Commands:
 
 The main use cases are:
 
-* You already have a bunch of configuration files (the output of `oc export dc --all-namespaces`, say, assuming you're lucky enough to be `cluster-admin`)
+* Command line: this use case assumes you already have a bunch of configuration objects (the output of `oc export dc --all-namespaces`, say)
 * You wish to generate reports by posting JSON configuration files to the server at the URL shown
-* Open the GUI in the browser at the second URL shown
+* Open the GUI in the browser and fetch current configuration data from the master
 
 ### Command line use
 ```
