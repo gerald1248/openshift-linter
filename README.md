@@ -1,9 +1,7 @@
 OpenShift Linter
 ================
 
-This is a utility for OpenShift users/admins who want to know if certain (very basic) rules have been followed. You can also specify naming conventions for namespaces (i.e. projects), names, containers and environment variables.
-
-As it's very early days the focus is on `DeploymentConfig` objects.
+This is a utility for OpenShift users/admins who want to know if certain rules have been followed.
 
 <img src="screenshots/openshift-linter.png" width="512" alt="Screenshot of the OpenShift Linter GUI"/>
 
@@ -36,19 +34,13 @@ Commands:
 The main use cases are:
 
 * You already have a bunch of configuration files (the output of `oc export dc --all-namespaces`, say, assuming you're lucky enough to be `cluster-admin`)
-```
-$ ./openshift-linter i-contain-multitudes.json
-```
 * You wish to generate reports by posting JSON configuration files to the server at the URL shown
-```
-$ ./openshift-linter -p 8421
-Listening on port 8421
-POST JSON sources to http://localhost:8421/openshift-linter
-Generate report at http://localhost:8421/openshift-linter/report
-```
 * Open the GUI in the browser at the second URL shown
 
 ### Command line use
+```
+$ ./openshift-linter i-contain-multitudes.yaml
+```
 
 On the command line, the sample configuration `data/sample-mix.min.json` produces the following markdown output (excerpt):
 
@@ -71,6 +63,12 @@ To write out YAML or JSON instead, use the `-o` switch specifying either `json` 
 When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole.
 
 ### Server use
+```
+$ ./openshift-linter -p 8421
+Listening on port 8421
+POST JSON sources to http://localhost:8421/openshift-linter
+Generate report at http://localhost:8421/openshift-linter/report
+```
 Note that all inputs and outputs in server mode are JSON only. You can supply parameters by adding `customNamespaceLabel`, `customNamespacePattern`, `customNamePattern`, `customContainerPattern`, `customEnvPattern` properties to the JSON object passed to the server.
 
 ### GUI use
@@ -117,19 +115,14 @@ src
             ├── item-pattern.go
             ├── item-security.go
             ├── items.go
-            ├── makelist.go
             ├── openshift-linter.go
-            ├── package
             ├── package.json
             ├── preflight.go
             ├── preflight_test.go
-            ├── preprocess.go
-            ├── process.go
             ├── screenshots
             ├── server.go
             ├── src
             ├── static
-            ├── summary.go
             ├── types.go
             └── types_test.go
 ```
@@ -153,7 +146,7 @@ In other words, it's very nearly the invocation to use when installing `gulp-cli
 $ node node_modules/gulp/bin/gulp.js
 ```
 
-Before running `gulp` (which builds and tests the program), fetch and install the dependencies (`go get` also runs at build time, albeit without the -u switch):
+Before running `gulp` (which builds and tests the program), fetch and install the Go dependencies (`go get` also runs at build time):
 
 ```
 $ go get -u github.com/jteeuwen/go-bindata/...
