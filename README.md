@@ -34,8 +34,8 @@ Commands:
 The main use cases are:
 
 * Command line: this use case assumes you already have a bunch of configuration objects (the output of `oc export dc --all-namespaces`, say)
-* You wish to generate reports by posting JSON configuration files to the server at the URL shown
-* Open the GUI in the browser and fetch current configuration data from the master
+* Server: you wish to generate reports by posting JSON configuration files to the server at the URL shown
+* GUI: point your browser to the URL shown and fetch current configuration data from the master
 
 ### Command line use
 ```
