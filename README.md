@@ -11,10 +11,14 @@ Usage
 -----
 ```
 Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
+  -c string
+    	TLS server certificate (default "cert.pem")
   -container string
     	pattern for containers (default "^[a-z0-9_-]+$")
   -env string
     	pattern for environment variables (default "^[A-Z0-9_-]+$")
+  -k string
+    	TLS server key (default "key.pem")
   -n string
     	hostname (default "localhost")
   -name string
@@ -26,7 +30,7 @@ Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
   -o string
     	output format (json, yaml or md) (default "md")
   -p int
-    	listen on port (default 8000)
+    	listen on port (default 8443)
 Commands:
   list	Print list of available checks
 ```
@@ -64,10 +68,10 @@ When setting naming conventions for namespaces, names, containers and environmen
 
 ### Server use
 ```
-$ ./openshift-linter -p 8421
-Listening on port 8421
-POST JSON sources to http://localhost:8421/openshift-linter
-Generate report at http://localhost:8421/openshift-linter/report
+$ ./openshift-linter
+Listening on port 8443
+POST JSON sources to https://localhost:8443/openshift-linter
+Generate report at https://localhost:8443/openshift-linter/report
 ```
 Note that all inputs and outputs in server mode are JSON only. You can supply parameters by adding `customNamespaceLabel`, `customNamespacePattern`, `customNamePattern`, `customContainerPattern`, `customEnvPattern` properties to the JSON object passed to the server.
 
