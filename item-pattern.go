@@ -7,7 +7,7 @@ import (
 )
 
 type ItemInvalidName struct {
-	name, description string
+	name, description, kind string
 }
 
 func (iin *ItemInvalidName) Name() string {
@@ -18,10 +18,14 @@ func (iin *ItemInvalidName) Description() string {
 	return iin.description
 }
 
+func (iin *ItemInvalidName) Kind() string {
+	return iin.kind
+}
+
 func (iin *ItemInvalidName) Lint(config *Config, params LinterParams) (ResultMap, error) {
 
 	//see item-env for these two getters
-	resultEnv, _ := ResultEnv(config, params)
+	resultEnv, _ := ResultEnv(config, params, iin.Kind())
 	keysEnv := KeysEnv(resultEnv)
 
 	//name pattern
@@ -47,6 +51,7 @@ func (iin *ItemInvalidName) Lint(config *Config, params LinterParams) (ResultMap
 
 	for _, key := range keysEnv {
 		item := resultEnv[key]
+
 		for _, spec := range item {
 			if checkNamespace == true {
 				if reNamespace.FindStringIndex(spec.Namespace) == nil {

@@ -1,7 +1,7 @@
 package main
 
 type ItemHealth struct {
-	name, description string
+	name, description, kind string
 }
 
 func (ih *ItemHealth) Name() string {
@@ -12,11 +12,17 @@ func (ih *ItemHealth) Description() string {
 	return ih.description
 }
 
+func (ih *ItemHealth) Kind() string {
+	return ih.kind
+}
+
 func (is *ItemHealth) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	resultHealth := make(ResultMap)
 	var problem string
 	for _, item := range config.Items {
-
+		if item.Kind != is.Kind() {
+			continue
+		}
 		//nested template with its own `metadata` and `spec` properties?
 		if item.Spec != nil && item.Spec.Template != nil {
 			for _, container := range item.Spec.Template.Spec.Containers {
