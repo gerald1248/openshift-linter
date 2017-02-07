@@ -8,6 +8,7 @@ type LinterItem interface {
 	Lint(*Config, LinterParams) (ResultMap, error)
 	Name() string
 	Description() string
+	Kind() string
 }
 
 type Config struct {

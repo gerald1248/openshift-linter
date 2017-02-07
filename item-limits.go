@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 type ItemLimits struct {
-	name, description string
+	name, description, kind string
 }
 
 func (il *ItemLimits) Name() string {
@@ -14,11 +14,18 @@ func (il *ItemLimits) Description() string {
 	return il.description
 }
 
+func (il *ItemLimits) Kind() string {
+	return il.kind
+}
+
 func (il *ItemLimits) Lint(config *Config, params LinterParams) (ResultMap, error) {
 	//deployment config without/with incomplete limits
 	resultLimits := make(ResultMap)
 	var problem string
 	for _, item := range config.Items {
+		if item.Kind != il.Kind() {
+			continue
+		}
 
 		//nested template with its own `metadata` and `spec` properties?
 		if item.Spec != nil && item.Spec.Template != nil {

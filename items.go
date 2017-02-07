@@ -7,13 +7,13 @@ import (
 
 func Items() []LinterItem {
 
-	items := []LinterItem{&ItemInvalidKey{"env name invalid", "env name doesn't match predefined regex"},
-		&ItemSimilarKey{"env name collision", "near-identical env names"},
-		&ItemInvalidName{"name invalid", "namespace, name or container doesn't match predefined regex"},
-		&ItemHealth{"health", "health check missing or incomplete"},
-		&ItemImagePullPolicy{"image pull policy", "policy 'Always' or ':latest' image specified"},
-		&ItemLimits{"limits", "resource limits missing, incomplete or invalid"},
-		&ItemSecurity{"security", "privileged security context"}}
+	items := []LinterItem{&ItemInvalidKey{"env name invalid", "env name doesn't match predefined regex", "DeploymentConfig"},
+		&ItemSimilarKey{"env name collision", "near-identical env names", "DeploymentConfig"},
+		&ItemInvalidName{"name invalid", "namespace, name or container doesn't match predefined regex", "DeploymentConfig"},
+		&ItemHealth{"health", "health check missing or incomplete", "DeploymentConfig"},
+		&ItemImagePullPolicy{"image pull policy", "policy 'Always' or ':latest' image specified", "DeploymentConfig"},
+		&ItemLimits{"limits", "resource limits missing, incomplete or invalid", "DeploymentConfig"},
+		&ItemSecurity{"security", "privileged security context", "DeploymentConfig"}}
 
 	return items
 }
