@@ -14,7 +14,7 @@ func TestHeading(t *testing.T) {
 
 `
 
-  var bufferH1 bytes.Buffer
+	var bufferH1 bytes.Buffer
 	heading("Foobar", 1, &bufferH1)
 	if bufferH1.String() != expectedH1 {
 		t.Errorf("Expected:\n%s\nGot:\n%s\n", expectedH1, bufferH1.String())

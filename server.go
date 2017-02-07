@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/elazarl/go-bindata-assetfs"
+	"github.com/kabukky/httpscerts"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -13,18 +14,29 @@ type PostStruct struct {
 	Buffer string
 }
 
-func serve(host string, port int) {
+func serve(certificate, key, hostname string, port int) {
 	virtual_fs := &assetfs.AssetFS{
 		Asset:     Asset,
 		AssetDir:  AssetDir,
 		AssetInfo: AssetInfo}
+
+	err := httpscerts.Check(certificate, key)
+	if err != nil {
+		err = httpscerts.Generate(certificate, key, fmt.Sprintf("%s:%d", hostname, port))
+		if err != nil {
+			log.Fatal("Can't create https certs")
+		}
+		fmt.Printf("Created %s and %s\n", certificate, key)
+	}
+
 	http.Handle("/static/", http.FileServer(virtual_fs))
 	http.HandleFunc("/openshift-linter/report", guiHandler)
 	http.HandleFunc("/openshift-linter", handler)
+
 	fmt.Printf("Listening on port %d\n"+
-		"POST JSON sources to http://%s:%d/openshift-linter\n"+
-		"Generate report at http://%s:%d/openshift-linter/report\n", port, host, port, host, port)
-	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", host, port), nil))
+		"POST JSON sources to https://%s:%d/openshift-linter\n"+
+		"Generate report at https://%s:%d/openshift-linter/report\n", port, hostname, port, hostname, port)
+	log.Fatal(http.ListenAndServeTLS(fmt.Sprintf("%s:%d", hostname, port), certificate, key, nil))
 }
 
 func guiHandler(w http.ResponseWriter, r *http.Request) {

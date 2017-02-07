@@ -18,8 +18,10 @@ func main() {
 		os.Exit(0)
 	}
 
+	certificate := flag.String("c", "cert.pem", "TLS server certificate")
+	key := flag.String("k", "key.pem", "TLS server key")
 	host := flag.String("n", "localhost", "hostname")
-	port := flag.Int("p", 8000, "listen on port")
+	port := flag.Int("p", 8443, "listen on port")
 	output := flag.String("o", "md", "output format (json, yaml or md)")
 	namespaceLabel := flag.String("namespace-label", "env", "metadata.labels key denoting namespace")
 	namespacePattern := flag.String("namespace", "^[a-z0-9_-]*$", "pattern for namespaces/projects")
@@ -33,7 +35,7 @@ func main() {
 	//patterns are ignored in server mode - specify as follows:
 	//{ customNamespacePattern="...", customNamePattern="..."", ... }
 	if len(args) == 0 {
-		serve(*host, *port)
+		serve(*certificate, *key, *host, *port)
 		return
 	} else if len(args) == 1 {
 		switch args[0] {
