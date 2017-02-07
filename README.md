@@ -172,3 +172,7 @@ To cross-compile Windows binaries on Linux or Mac, enter:
 $ GOOS=windows GOARCH=amd64 go install
 $ gulp build-win32
 ```
+To create Linux binaries, enter:
+```
+$ gulp build-linux-x64
+```

@@ -89,6 +89,16 @@ gulp.task('build-go-win32', function(callback) {
   });
 });
 
+gulp.task('build-go-linux-x64', function(callback) {
+	platform = "linux"
+	arch = "x64"
+	exec('GOOS=linux GOARCH=amd64 go build' + raceSwitch, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    callback(err);
+  });
+});
+
 gulp.task('package-binary', function() {
   return gulp.src(['./openshift-linter', './openshift-linter.exe'], { base: '.' })
     .pipe(gulp.dest('package'))
@@ -162,6 +172,24 @@ gulp.task('build-win32', function(callback) {
     'build-html',
     'build-bindata',
     'build-go-win32',
+    'package-binary',
+    'package-snakeoil',
+    'dist',
+    'clean-home',
+		//skip tests as binary won't run
+    callback);
+});
+		
+gulp.task('build-linux', function(callback) {
+  runSequence(
+		//skip clean-build to retain dist
+    'fmt',
+    'vet',
+    'build-js',
+    'build-css',
+    'build-html',
+    'build-bindata',
+    'build-go-linux-x64',
     'package-binary',
     'package-snakeoil',
     'dist',
