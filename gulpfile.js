@@ -42,6 +42,7 @@ gulp.task('build', function(callback) {
     'build-bindata',
     'build-go',
     'package-binary',
+    'package-snakeoil',
     'dist',
     'clean-home',
     'test',
@@ -90,6 +91,11 @@ gulp.task('build-go-win32', function(callback) {
 
 gulp.task('package-binary', function() {
   return gulp.src(['./openshift-linter', './openshift-linter.exe'], { base: '.' })
+    .pipe(gulp.dest('package'))
+});
+
+gulp.task('package-snakeoil', function() {
+  return gulp.src(['./tls/*'], { base: './tls/' })
     .pipe(gulp.dest('package'))
 });
 
@@ -157,6 +163,7 @@ gulp.task('build-win32', function(callback) {
     'build-bindata',
     'build-go-win32',
     'package-binary',
+    'package-snakeoil',
     'dist',
     'clean-home',
 		//skip tests as binary won't run
