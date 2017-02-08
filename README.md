@@ -174,5 +174,5 @@ $ gulp build-win32
 ```
 To create Linux binaries, enter:
 ```
-$ gulp build-linux-x64
+$ gulp build-linux
 ```
