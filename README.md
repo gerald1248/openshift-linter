@@ -165,8 +165,8 @@ How do I create my own checks?
 ------------------------------
 Add types that conform to the `LinterItem` interface, then register them in `items.go`.
 
-Cross-compile for Windows
--------------------------
+Cross-compilation
+-----------------
 To cross-compile Windows binaries on Linux or Mac, enter:
 ```
 $ GOOS=windows GOARCH=amd64 go install
