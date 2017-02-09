@@ -14,6 +14,7 @@ type LinterItem interface {
 type Config struct {
 	Kind                   string  `json:"kind"`
 	Items                  []*Item `json:"items"`
+	Objects                []*Item `json:"objects"`
 	CustomNamespaceLabel   string  `json:"customNamespaceLabel"`
 	CustomNamespacePattern string  `json:"customNamespacePattern"`
 	CustomNamePattern      string  `json:"customNamePattern"`
@@ -35,9 +36,14 @@ type Metadata struct {
 }
 
 type Spec struct {
+	//DeploymentConfig
 	Volumes    []interface{} `json:"volumes"`
 	Containers []*Container  `json:"containers"`
 	Template   *Item         `json:"template"` //nested item with its own Metadata and Spec sections
+
+	//Route
+	Host string `json:"host"`
+	Port *Port  `json:"port"`
 }
 
 type Container struct {
@@ -86,6 +92,10 @@ type Resources struct {
 type ResourceConstraint struct {
 	CPU    string `json:"cpu"`
 	Memory string `json:"memory"`
+}
+
+type Port struct {
+	TargetPort int `json:"targetPort"`
 }
 
 func (r *ResourceConstraint) Complete() bool {

@@ -154,6 +154,10 @@ gulp.task('clean-build', function() {
   ], { force: true });
 });
 
+gulp.task('clean-package', function() {
+  return del.sync(['./package/*'], { force: true });
+});
+
 gulp.task('build-bindata', function(callback) {
   exec('go-bindata static/...', function(err, stdout, stderr) {
     console.log(stdout);
@@ -172,6 +176,7 @@ gulp.task('build-win32', function(callback) {
     'build-html',
     'build-bindata',
     'build-go-win32',
+    'clean-package',
     'package-binary',
     'package-snakeoil',
     'dist',
@@ -190,6 +195,7 @@ gulp.task('build-linux', function(callback) {
     'build-html',
     'build-bindata',
     'build-go-linux-x64',
+    'clean-package',
     'package-binary',
     'package-snakeoil',
     'dist',

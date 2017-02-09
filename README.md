@@ -91,6 +91,7 @@ $ ./openshift-linter list
 |image pull policy |policy 'Always' or ':latest' image specified               |
 |limits            |resource limits missing, incomplete or invalid             |
 |name invalid      |namespace, name or container doesn't match predefined regex|
+|route conflict    |route has more than one name                               |
 |security          |privileged security context                                |
 ```
 

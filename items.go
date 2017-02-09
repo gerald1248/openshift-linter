@@ -13,8 +13,8 @@ func Items() []LinterItem {
 		&ItemHealth{"health", "health check missing or incomplete", "DeploymentConfig"},
 		&ItemImagePullPolicy{"image pull policy", "policy 'Always' or ':latest' image specified", "DeploymentConfig"},
 		&ItemLimits{"limits", "resource limits missing, incomplete or invalid", "DeploymentConfig"},
-		&ItemSecurity{"security", "privileged security context", "DeploymentConfig"}}
-
+		&ItemSecurity{"security", "privileged security context", "DeploymentConfig"},
+		&ItemRouteConflict{"route conflict", "route has more than one name", "Route"}}
 	return items
 }
 
