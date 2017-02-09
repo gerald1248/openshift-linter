@@ -21,6 +21,12 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		return nil, errors.New(fmt.Sprintf("can't unmarshal data: %v", err))
 	}
 
+	//objects of type "Template" have "objects" not "items"
+	//standardize on "items"
+	if len(config.Objects) > 0 && len(config.Items) == 0 {
+		config.Items = config.Objects //copy pointer
+	}
+
 	//try to guess namespace from configurable metadata field
 	preprocessConfig(&config, params)
 

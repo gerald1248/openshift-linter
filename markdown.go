@@ -48,6 +48,12 @@ func table(s ContainerSet, b *bytes.Buffer) {
 	//header row
 	rows[0] = []string{"Namespace", "Name", "Container"}
 
+	//special case: one empty spec
+	if count == 1 && s[0].Namespace == "" && s[0].Name == "" && s[0].Container == "" {
+		//exit without writing to buffer
+		return
+	}
+
 	//content rows
 	for i := 0; i < count; i++ {
 		spec := s[i]

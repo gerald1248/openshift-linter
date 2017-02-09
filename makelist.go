@@ -17,13 +17,12 @@ func makeList(a *[]byte) error {
 	}
 
 	switch obj.Kind {
-	case "List":
+	case "List", "Template":
 		return nil
 	case "BuildConfig", "DeploymentConfig", "Pod", "Route":
 		slices := [][]byte{[]byte(`{"kind":"List","items":[`), *a, []byte(`]}`)}
 		b := bytes.Join(slices, []byte{})
 		*a = b
-		fmt.Printf("%s\n", string(*a))
 		return nil
 	}
 	return errors.New(fmt.Sprintf("can't parse JSON: no configuration object found"))

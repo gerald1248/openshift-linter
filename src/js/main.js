@@ -204,7 +204,12 @@ var App = function() {
 					continue;
 				}
 				plural = (len === 1) ? "" : "s"
-					buffer += "<h3>" + key + ": " + subkey + " (" + len + " item" + plural + ")</h3>";
+				buffer += "<h3>" + key + ": " + subkey + " (" + len + " item" + plural + ")</h3>";
+				
+				//special case: skip table when only one blank container spec given
+				if (len === 1 && list[0].Namespace === "" && list[0].Name === "" && list[0].Container === "") {
+					continue;
+				}
 				buffer += "<table class='table table-striped'>";
 				buffer += "<thead class='thead-default'><tr><th>Namespace</th><th>Name</th><th>Container</th></tr></thead>";
 				for (var i = 0; i < len; i++) {
