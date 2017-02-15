@@ -6,7 +6,7 @@ import (
 
 func TestProcessFile(t *testing.T) {
 	invalidPath := "/non/existent/file.yaml"
-	params := LinterParams{"", "", "", "", "", "json"}
+	params := LinterParams{"", "", "", "", "", "", "", "json"}
 	_, err := processFile(invalidPath, params)
 
 	if err == nil {
@@ -17,7 +17,7 @@ func TestProcessFile(t *testing.T) {
 func TestProcessBytes(t *testing.T) {
 	//don't allow XML
 	xmlBuffer := []byte(`<?xml version="1.0" encoding="UTF-8" standalone="true"?><root/>`)
-	params := LinterParams{"", "", "", "", "", "xml"}
+	params := LinterParams{"", "", "", "", "", "", "", "xml"}
 	_, err := processBytes(xmlBuffer, params)
 
 	if err == nil {

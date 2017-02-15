@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"regexp"
+	"strconv"
 )
 
 type LinterItem interface {
@@ -95,7 +97,7 @@ type ResourceConstraint struct {
 }
 
 type Port struct {
-	TargetPort int `json:"targetPort"`
+	TargetPort CoerceString `json:"targetPort"`
 }
 
 func (r *ResourceConstraint) Complete() bool {
@@ -136,12 +138,14 @@ type ResultItem struct {
 type CombinedResultMap map[string]ResultMap
 
 type LinterParams struct {
-	NamespaceLabel   string
-	NamespacePattern string
-	NamePattern      string
-	ContainerPattern string
-	EnvPattern       string
-	Output           string
+	NamespaceLabel             string
+	NamespacePattern           string
+	NamePattern                string
+	ContainerPattern           string
+	EnvPattern                 string
+	SkipContainerPattern       string
+	WhitelistRegistriesPattern string
+	Output                     string
 }
 
 type MinimalObject struct {
@@ -150,4 +154,29 @@ type MinimalObject struct {
 
 type Table struct {
 	Row []string
+}
+
+type CoerceString struct {
+	s string
+}
+
+func (cs *CoerceString) String() string {
+	return cs.s
+}
+
+//see also: kubernetes/api/util.gokubernetes/api/util.go for fuzzy alternative
+func (cs *CoerceString) UnmarshalJSON(value []byte) error {
+	//string
+	if value[0] == '"' {
+		return json.Unmarshal(value, &cs.s)
+	}
+	//int
+	//TODO: validate (^[0-9]+$)
+	var i int
+	err := json.Unmarshal(value, &i)
+	if err == nil {
+		cs.s = strconv.Itoa(i)
+		return nil
+	}
+	return err
 }
