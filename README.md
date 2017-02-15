@@ -31,6 +31,10 @@ Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
     	output format (json, yaml or md) (default "md")
   -p int
     	listen on port (default 8443)
+  -skip-container string
+    	pattern for skipped containers
+  -whitelist-registries string
+    	pattern for whitelisted registries (default ".*")
 Commands:
   list	Print list of available checks
 ```
@@ -91,6 +95,7 @@ $ ./openshift-linter list
 |image pull policy |policy 'Always' or ':latest' image specified               |
 |limits            |resource limits missing, incomplete or invalid             |
 |name invalid      |namespace, name or container doesn't match predefined regex|
+|registry          |registry not whitelisted                                   |
 |route conflict    |route has more than one name                               |
 |security          |privileged security context                                |
 ```
