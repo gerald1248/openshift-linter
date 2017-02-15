@@ -33,11 +33,11 @@ func (irc *ItemRouteConflict) Lint(config *Config, params LinterParams) (ResultM
 
 		if item.Metadata != nil && item.Spec != nil {
 			//skip if host or targetPort field not present
-			if item.Spec.Host == "" || item.Spec.Port == nil || item.Spec.Port.TargetPort == 0 {
+			if item.Spec.Host == "" || item.Spec.Port == nil || item.Spec.Port.TargetPort.String() == "" {
 				continue
 			}
 
-			key = fmt.Sprintf("%s:%d", item.Spec.Host, item.Spec.Port.TargetPort)
+			key = fmt.Sprintf("%s:%s", item.Spec.Host, item.Spec.Port.TargetPort)
 			value = item.Metadata.Name
 
 			if len(routeMap[key]) > 0 && routeMap[key] != value {
