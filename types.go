@@ -164,7 +164,7 @@ func (cs *CoerceString) String() string {
 	return cs.s
 }
 
-//see also: kubernetes/api/util.gokubernetes/api/util.go for fuzzy alternative
+//see also: kubernetes/api/util.go for fuzzy alternative
 func (cs *CoerceString) UnmarshalJSON(value []byte) error {
 	//string
 	if value[0] == '"' {

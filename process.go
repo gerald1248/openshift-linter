@@ -59,6 +59,12 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		if err != nil {
 			return nil, err
 		}
+
+		err = postprocessResult(&result, params)
+		if err != nil {
+			return nil, err
+		}
+
 		combined[item.Name()] = result
 	}
 
