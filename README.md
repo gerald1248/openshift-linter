@@ -13,27 +13,27 @@ Usage
 Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
   -c string
     	TLS server certificate (default "cert.pem")
-  -container string
-    	pattern for containers (default "^[a-z0-9_-]+$")
-  -env string
-    	pattern for environment variables (default "^[A-Z0-9_-]+$")
   -k string
-    	TLS server key (default "key.pem")
+      TLS server key (default "key.pem")
   -n string
-    	hostname (default "localhost")
-  -name string
-    	pattern for names (default "^[a-z0-9_-]+$")
-  -namespace string
-    	pattern for namespaces/projects (default "^[a-z0-9_-]*$")
-  -namespace-label string
-    	metadata.labels key denoting namespace (default "env")
+      hostname (default "localhost")
   -o string
-    	output format (json, yaml or md) (default "md")
+      output format (json, yaml or md) (default "md")
   -p int
-    	listen on port (default 8443)
-  -skip-container string
+      listen on port (default 8443)
+  --container string
+    	pattern for containers (default "^[a-z0-9_-]+$")
+  --env string
+    	pattern for environment variables (default "^[A-Z0-9_-]+$")
+  --name string
+    	pattern for names (default "^[a-z0-9_-]+$")
+  --namespace string
+    	pattern for namespaces/projects (default "^[a-z0-9_-]*$")
+  --namespace-label string
+    	metadata.labels key denoting namespace (default "env")
+  --skip-container string
     	pattern for skipped containers
-  -whitelist-registries string
+  --whitelist-registries string
     	pattern for whitelisted registries (default ".*")
 Commands:
   list	Print list of available checks
@@ -41,7 +41,7 @@ Commands:
 
 The main use cases are:
 
-* Command line: this use case assumes you already have a bunch of configuration objects (the output of `oc export dc --all-namespaces`, say)
+* Command line: this use case assumes you already have a bunch of configuration objects (e.g. the output of `oc export dc --all-namespaces --raw`)
 * Server: you wish to generate reports by posting JSON configuration files to the server at the URL shown
 * GUI: point your browser to the URL shown and fetch current configuration data from the master
 

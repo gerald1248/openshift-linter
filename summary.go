@@ -1,6 +1,6 @@
 package main
 
-func summary(config *Config, combined *CombinedResultMap) ResultMap {
+func summary(config *Config, combined *CombinedResultMap, params LinterParams) ResultMap {
 	all := make(ResultMap)
 	var allKeys []string
 	for _, item := range config.Items {
@@ -43,6 +43,8 @@ func summary(config *Config, combined *CombinedResultMap) ResultMap {
 			summary["r"] = append(summary["r"], all[key]...)
 		}
 	}
+
+	postprocessResult(&summary, params)
 
 	return summary
 }

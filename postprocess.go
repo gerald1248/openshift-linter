@@ -19,12 +19,23 @@ func postprocessResult(r *ResultMap, params LinterParams) error {
 	//iterate over map keys
 	for k, v := range *r {
 		//iterate over values
+		replace := false
+		var s ContainerSet
 		for _, spec := range v {
 			container := spec.Container
-			if re.FindStringIndex(spec.Container) != nil {
-				delete(*r, k)
-				fmt.Printf("Skipping %s\n", container)
+			if len(container) == 0 {
+				continue
 			}
+
+			if re.FindStringIndex(spec.Container) != nil {
+				replace = true
+				fmt.Printf("Skipping %s\n", container)
+			} else {
+				s = append(s, spec)
+			}
+		}
+		if replace {
+			(*r)[k] = s
 		}
 	}
 
