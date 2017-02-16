@@ -20,7 +20,7 @@ func postprocessResult(r *ResultMap, params LinterParams) error {
 	for k, v := range *r {
 		//iterate over values
 		replace := false
-		var s ContainerSet
+		s := []ContainerSpec{} //zero-length slice, _not_ nil, so JSON encoder writes []
 		for _, spec := range v {
 			container := spec.Container
 			if len(container) == 0 {
