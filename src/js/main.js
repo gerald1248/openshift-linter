@@ -184,6 +184,10 @@ var App = function() {
 		var i = 0;
 		for (key in obj) {
 			if (obj.hasOwnProperty(key)) {
+				if (!obj[key]) {
+					// null value after skipping containers
+					continue
+				}
 				i += obj[key].length;
 			}
 		}
@@ -194,10 +198,13 @@ var App = function() {
 	this.formatReport = function(obj) {
 		var buffer = "";
 		for (key in obj) {
-			if (key === "summary") {
+			if (key === "summary" || !obj[key]) {
 				continue;
 			}
 			for (subkey in obj[key]) {
+				if (!obj[key][subkey]) {
+					continue;
+				}
 				var list = obj[key][subkey];
 				var len = list.length;
 				if (len === 0) {
