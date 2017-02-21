@@ -173,12 +173,8 @@ Add types that conform to the `LinterItem` interface, then register them in `ite
 
 Cross-compilation
 -----------------
-To cross-compile Windows binaries on Linux or Mac, enter:
+To cross-compile Mac, Linux and Windows binaries, enter:
 ```
-$ GOOS=windows GOARCH=amd64 go install
-$ gulp build-win32
+$ gulp build-all
 ```
-To create Linux binaries, enter:
-```
-$ gulp build-linux
-```
+You can also individually cross-compile using the `build-darwin`, `build-linux` and `build-win32` targets.
