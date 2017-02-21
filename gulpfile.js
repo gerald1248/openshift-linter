@@ -49,6 +49,15 @@ gulp.task('build', function(callback) {
     callback);
 });
 
+gulp.task('build-all', function(callback) {
+	runSequence(
+		'clean-dist',
+		'build-win32',
+		'build-linux',
+		'build-darwin',
+		callback);
+});
+
 gulp.task('build-js', function() {
   return gulp.src(['./src/js/main.js'])
     .pipe(sourcemaps.init())
@@ -73,6 +82,16 @@ gulp.task('build-html', function() {
 
 gulp.task('build-go', function(callback) {
   exec('go build' + raceSwitch, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    callback(err);
+  });
+});
+
+gulp.task('build-go-darwin', function(callback) {
+	platform = "darwin"
+	arch = "amd64"
+	exec('GOOS=darwin GOARCH=amd64 go build' + raceSwitch, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
@@ -141,6 +160,10 @@ gulp.task('vet', function(callback) {
   });
 });
 
+gulp.task('clean-dist', function() {
+	return del.sync(['./dist/*.zip'], { force: true });
+});
+
 gulp.task('clean-home', function() {
   return del.sync(['./openshift-linter', './openshift-linter.exe'], { force: true });
 });
@@ -204,6 +227,25 @@ gulp.task('build-linux', function(callback) {
     callback);
 });
 		
+gulp.task('build-darwin', function(callback) {
+  runSequence(
+		//skip clean-build to retain dist
+    'fmt',
+    'vet',
+    'build-js',
+    'build-css',
+    'build-html',
+    'build-bindata',
+    'build-go-darwin',
+    'clean-package',
+    'package-binary',
+    'package-snakeoil',
+    'dist',
+    'clean-home',
+		//skip tests as binary won't run
+    callback);
+});
+
 gulp.task('watch', function() {
   gulp.watch(['./*.go', './src/**'], [
     'build'
