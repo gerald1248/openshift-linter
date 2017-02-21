@@ -39,11 +39,11 @@ func (irc *ItemRouteConflict) Lint(config *Config, params LinterParams) (ResultM
 
 			namespace := item.Metadata.Namespace
 
-			key = item.Spec.Host
+			key = item.Spec.Host + item.Spec.Path
 			value = item.Metadata.Name
 
 			if len(routeMap[key]) > 0 && routeMap[key] != value {
-				problem := fmt.Sprintf("Route to host '%s' defined twice: '%s' and '%s'", routeMap[key], value, key)
+				problem := fmt.Sprintf("Route to '%s' defined twice: '%s' and '%s'", key, routeMap[key], value)
 				if len(namespace) > 0 {
 					problem += fmt.Sprintf(" (namespace '%s')", namespace)
 				}
