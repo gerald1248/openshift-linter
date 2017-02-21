@@ -33,15 +33,20 @@ func (irc *ItemRouteConflict) Lint(config *Config, params LinterParams) (ResultM
 
 		if item.Metadata != nil && item.Spec != nil {
 			//skip if host or targetPort field not present
-			if item.Spec.Host == "" || item.Spec.Port == nil || item.Spec.Port.TargetPort.String() == "" {
+			if item.Spec.Host == "" {
 				continue
 			}
 
-			key = fmt.Sprintf("%s:%s", item.Spec.Host, item.Spec.Port.TargetPort)
+			namespace := item.Metadata.Namespace
+
+			key = item.Spec.Host
 			value = item.Metadata.Name
 
 			if len(routeMap[key]) > 0 && routeMap[key] != value {
-				problem := fmt.Sprintf("'%s' and '%s' both name route to '%s'", routeMap[key], value, key)
+				problem := fmt.Sprintf("Route to host '%s' defined twice: '%s' and '%s'", routeMap[key], value, key)
+				if len(namespace) > 0 {
+					problem += fmt.Sprintf(" (namespace '%s')", namespace)
+				}
 				resultRouteConflict[problem] = append(resultRouteConflict[problem], ContainerSpec{"", "", ""})
 			} else {
 				routeMap[key] = value
