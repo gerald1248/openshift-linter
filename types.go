@@ -45,6 +45,7 @@ type Spec struct {
 
 	//Route
 	Host string `json:"host"`
+	Path string `json:"path"`
 	Port *Port  `json:"port"`
 }
 

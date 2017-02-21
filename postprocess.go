@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"regexp"
 )
 
@@ -29,7 +28,6 @@ func postprocessResult(r *ResultMap, params LinterParams) error {
 
 			if re.FindStringIndex(spec.Container) != nil {
 				replace = true
-				fmt.Printf("Skipping %s\n", container)
 			} else {
 				s = append(s, spec)
 			}
