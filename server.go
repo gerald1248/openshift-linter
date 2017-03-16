@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/elazarl/go-bindata-assetfs"
-	"github.com/kabukky/httpscerts"
+	"github.com/gerald1248/httpscerts"
 	"io/ioutil"
 	"log"
 	"net/http"
