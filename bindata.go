@@ -137,7 +137,7 @@ func staticCssMainCss() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/css/main.css", size: 51, mode: os.FileMode(420), modTime: time.Unix(1489691875, 0)}
+	info := bindataFileInfo{name: "static/css/main.css", size: 51, mode: os.FileMode(420), modTime: time.Unix(1489692016, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -257,7 +257,7 @@ func staticIndexHtml() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/index.html", size: 4223, mode: os.FileMode(420), modTime: time.Unix(1489691875, 0)}
+	info := bindataFileInfo{name: "static/index.html", size: 4223, mode: os.FileMode(420), modTime: time.Unix(1489692016, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -317,7 +317,7 @@ func staticJsBundleMinJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/bundle-min.js", size: 5472, mode: os.FileMode(420), modTime: time.Unix(1489691875, 0)}
+	info := bindataFileInfo{name: "static/js/bundle-min.js", size: 5472, mode: os.FileMode(420), modTime: time.Unix(1489692016, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
@@ -337,7 +337,7 @@ func staticJsBundleJs() (*asset, error) {
 		return nil, err
 	}
 
-	info := bindataFileInfo{name: "static/js/bundle.js", size: 29668, mode: os.FileMode(420), modTime: time.Unix(1489691875, 0)}
+	info := bindataFileInfo{name: "static/js/bundle.js", size: 29668, mode: os.FileMode(420), modTime: time.Unix(1489692016, 0)}
 	a := &asset{bytes: bytes, info: info}
 	return a, nil
 }
