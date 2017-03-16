@@ -42,7 +42,6 @@ gulp.task('build', function(callback) {
     'build-bindata',
     'build-go',
     'package-binary',
-    'package-snakeoil',
     'dist',
     'clean-home',
     'test',
@@ -123,11 +122,6 @@ gulp.task('package-binary', function() {
     .pipe(gulp.dest('package'))
 });
 
-gulp.task('package-snakeoil', function() {
-  return gulp.src(['./tls/*'], { base: './tls/' })
-    .pipe(gulp.dest('package'))
-});
-
 gulp.task('dist', function() {
   return gulp.src('./package/**/*', { base: './package' })
     .pipe(zip(pkg.name + '-' + pkg.version + '-' + platform + '-' + arch + '.zip'))
@@ -201,7 +195,6 @@ gulp.task('build-win32', function(callback) {
     'build-go-win32',
     'clean-package',
     'package-binary',
-    'package-snakeoil',
     'dist',
     'clean-home',
 		//skip tests as binary won't run
@@ -220,7 +213,6 @@ gulp.task('build-linux', function(callback) {
     'build-go-linux-x64',
     'clean-package',
     'package-binary',
-    'package-snakeoil',
     'dist',
     'clean-home',
 		//skip tests as binary won't run
@@ -239,7 +231,6 @@ gulp.task('build-darwin', function(callback) {
     'build-go-darwin',
     'clean-package',
     'package-binary',
-    'package-snakeoil',
     'dist',
     'clean-home',
 		//skip tests as binary won't run

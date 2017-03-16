@@ -30,26 +30,26 @@ func markdownTable(t *[][]string) string {
 				cell = "**" + cell + "**"
 			}
 			if cellIndex == 0 {
-				b.WriteString("|")
+				b.WriteByte('|')
 			}
 			b.WriteString(fmt.Sprintf("%-"+strconv.Itoa(maxLengthMap[cellIndex])+"s", cell))
-			b.WriteString("|")
+			b.WriteByte('|')
 		}
-		b.WriteString("\n")
+		b.WriteByte('\n')
 		if rowIndex == 0 {
 			for cellIndex, _ := range row {
 				if cellIndex == 0 {
-					b.WriteString("|")
+					b.WriteByte('|')
 				}
-				b.WriteString(":")
+				b.WriteByte(':')
 				for i := 0; i < (maxLengthMap[cellIndex] - 1); i++ {
-					b.WriteString("-")
+					b.WriteByte('-')
 				}
-				b.WriteString("|")
+				b.WriteByte('|')
 			}
-			b.WriteString("\n")
+			b.WriteByte('\n')
 		}
 	}
-	b.WriteString("\n")
+	b.WriteByte('\n')
 	return b.String()
 }
