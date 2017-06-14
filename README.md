@@ -21,8 +21,8 @@ Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
       output format (json, yaml or md) (default "md")
   -p int
       listen on port (default 8443)
-	--checks string
-	    pattern for selected checks (default "^[a-z0-9 _-]+$")
+  --checks string
+        pattern for selected checks (default "^[a-z0-9 _-]+$")
   --container string
     	pattern for containers (default "^[a-z0-9_-]+$")
   --env string
