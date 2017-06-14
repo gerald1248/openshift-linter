@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 )
 
@@ -16,7 +17,22 @@ func Items() []LinterItem {
 		&ItemSecurity{"security", "privileged security context", "DeploymentConfig"},
 		&ItemRegistries{"registry", "registry not whitelisted", "DeploymentConfig"},
 		&ItemRouteConflict{"route conflict", "route has more than one name", "Route"}}
+
 	return items
+}
+
+func ItemsFiltered(pattern string) []LinterItem {
+	re := regexp.MustCompile(pattern)
+	items := Items() //all linter items
+	filtered := []LinterItem{}
+	for _, item := range items {
+		name := item.Name()
+		if re.FindStringIndex(name) == nil {
+			continue
+		}
+		filtered = append(filtered, item)
+	}
+	return filtered
 }
 
 func ListLinterItems() {

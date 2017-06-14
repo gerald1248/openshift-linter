@@ -17,7 +17,6 @@ type Config struct {
 	Kind                   string  `json:"kind"`
 	Items                  []*Item `json:"items"`
 	Objects                []*Item `json:"objects"`
-	CustomNamespaceLabel   string  `json:"customNamespaceLabel"`
 	CustomNamespacePattern string  `json:"customNamespacePattern"`
 	CustomNamePattern      string  `json:"customNamePattern"`
 	CustomContainerPattern string  `json:"customContainerPattern"`
@@ -139,13 +138,13 @@ type ResultItem struct {
 type CombinedResultMap map[string]ResultMap
 
 type LinterParams struct {
-	NamespaceLabel             string
 	NamespacePattern           string
 	NamePattern                string
 	ContainerPattern           string
 	EnvPattern                 string
 	SkipContainerPattern       string
 	WhitelistRegistriesPattern string
+	CheckPattern               string
 	Output                     string
 }
 
