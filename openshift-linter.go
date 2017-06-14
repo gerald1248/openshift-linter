@@ -23,13 +23,13 @@ func main() {
 	host := flag.String("n", "localhost", "hostname")
 	port := flag.Int("p", 8443, "listen on port")
 	output := flag.String("o", "md", "output format (json, yaml or md)")
-	namespaceLabel := flag.String("namespace-label", "env", "metadata.labels key denoting namespace")
 	namespacePattern := flag.String("namespace", "^[a-z0-9_-]*$", "pattern for namespaces/projects")
 	namePattern := flag.String("name", "^[a-z0-9_-]+$", "pattern for names")
 	containerPattern := flag.String("container", "^[a-z0-9_-]+$", "pattern for containers")
 	envPattern := flag.String("env", "^[A-Z0-9_-]+$", "pattern for environment variables")
-	skipContainerPattern := flag.String("skip-container", "", "pattern for skipped containers")
+	skipContainerPattern := flag.String("skip-containers", "", "pattern for skipped containers")
 	whitelistRegistriesPattern := flag.String("whitelist-registries", ".*", "pattern for whitelisted registries")
+	checkPattern := flag.String("checks", "^[a-z0-9 _-]+$", "pattern for selected checks")
 
 	flag.Parse()
 	args := flag.Args()
@@ -51,7 +51,7 @@ func main() {
 
 	for _, arg := range args {
 		start := time.Now()
-		buffer, err := processFile(arg, LinterParams{*namespaceLabel, *namespacePattern, *namePattern, *containerPattern, *envPattern, *skipContainerPattern, *whitelistRegistriesPattern, *output})
+		buffer, err := processFile(arg, LinterParams{*namespacePattern, *namePattern, *containerPattern, *envPattern, *skipContainerPattern, *whitelistRegistriesPattern, *checkPattern, *output})
 		secs := time.Since(start).Seconds()
 
 		if err != nil {

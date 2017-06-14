@@ -21,6 +21,8 @@ Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
       output format (json, yaml or md) (default "md")
   -p int
       listen on port (default 8443)
+	--checks string
+	    pattern for selected checks (default "^[a-z0-9 _-]+$")
   --container string
     	pattern for containers (default "^[a-z0-9_-]+$")
   --env string
@@ -29,8 +31,6 @@ Usage: ./openshift-linter [<JSON/YAML file> [<JSON/YAML file>]]
     	pattern for names (default "^[a-z0-9_-]+$")
   --namespace string
     	pattern for namespaces/projects (default "^[a-z0-9_-]*$")
-  --namespace-label string
-    	metadata.labels key denoting namespace (default "env")
   --skip-container string
     	pattern for skipped containers
   --whitelist-registries string
@@ -69,6 +69,17 @@ image pull policy
 To write out YAML or JSON instead, use the `-o` switch specifying either `json` or `yaml`.
 
 When setting naming conventions for namespaces, names, containers and environment variables, be sure to use anchors to describe the string as a whole.
+
+### Specifying checks
+The option --checks allows the user to specify one or more of the available checks (see Listing below):
+```
+$ ./openshift-linter --checks limits input.yaml
+```
+Regular expressions can be used here, so the following invokes all checks related to limits/requests and security:
+```
+$ ./openshift-linter --checks "(limits|security)" input.yaml
+```
+Note that quotation marks may be necessary in this case.
 
 ### Server use
 ```

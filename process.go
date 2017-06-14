@@ -27,14 +27,7 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 		config.Items = config.Objects //copy pointer
 	}
 
-	//try to guess namespace from configurable metadata field
-	preprocessConfig(&config, params)
-
 	//for POST req access, pick up custom settings from JSON obj
-	if config.CustomNamespaceLabel != "" {
-		params.NamespaceLabel = config.CustomNamespaceLabel
-	}
-
 	if config.CustomNamespacePattern != "" {
 		params.NamespacePattern = config.CustomNamespacePattern
 	}
@@ -53,7 +46,11 @@ func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) 
 
 	combined := make(CombinedResultMap)
 
-	items := Items()
+	items := ItemsFiltered(params.CheckPattern)
+	if items == nil {
+		return nil, errors.New("no checks selected")
+	}
+
 	for _, item := range items {
 		result, err := item.Lint(&config, params)
 		if err != nil {
