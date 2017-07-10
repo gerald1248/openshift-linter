@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"time"
@@ -12,7 +13,7 @@ import (
 //Supports command line, server and GUI use
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: ./%s [<JSON/YAML file> [<JSON/YAML file>]]\n", filepath.Base(os.Args[0]))
+		fmt.Fprintf(os.Stderr, "Usage: %s [<JSON/YAML file> [<JSON/YAML file>]]\nAlternatively, pipe input to STDIN: oc export dc --raw -o json | %s\n", filepath.Base(os.Args[0]), filepath.Base(os.Args[0]))
 		flag.PrintDefaults()
 		fmt.Fprintf(os.Stderr, "Commands:\n  list\tPrint list of available checks\n")
 		os.Exit(0)
@@ -34,6 +35,29 @@ func main() {
 	flag.Parse()
 	args := flag.Args()
 
+	//use case [A]: STDIN handling
+	stdinFileInfo, _ := os.Stdin.Stat()
+	if stdinFileInfo.Mode()&os.ModeNamedPipe != 0 {
+		stdin, _ := ioutil.ReadAll(os.Stdin)
+		combinedResultMap, err := processBytes(stdin, LinterParams{*namespacePattern, *namePattern, *containerPattern, *envPattern, *skipContainerPattern, *whitelistRegistriesPattern, *checkPattern, *output})
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return
+		}
+
+		buffer, err := assembleOutput(combinedResultMap, *output)
+
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%v\n", err)
+			return
+		}
+
+		fmt.Println(buffer)
+		return
+	}
+
+	//use case [B]: server
 	//patterns are ignored in server mode - specify as follows:
 	//{ customNamespacePattern="...", customNamePattern="..."", ... }
 	if len(args) == 0 {
@@ -49,6 +73,7 @@ func main() {
 		}
 	}
 
+	// use case [C]: file input
 	for _, arg := range args {
 		start := time.Now()
 		buffer, err := processFile(arg, LinterParams{*namespacePattern, *namePattern, *containerPattern, *envPattern, *skipContainerPattern, *whitelistRegistriesPattern, *checkPattern, *output})

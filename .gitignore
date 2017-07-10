@@ -11,3 +11,4 @@ package
 bower_components
 ignore
 dist/
+package-lock.json

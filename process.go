@@ -88,7 +88,11 @@ func processFile(path string, params LinterParams) (string, error) {
 		return "", errors.New(fmt.Sprintf("can't process %s: %s", path, err))
 	}
 
-	switch params.Output {
+	return assembleOutput(combinedResultMap, params.Output)
+}
+
+func assembleOutput(combinedResultMap CombinedResultMap, output string) (string, error) {
+	switch output {
 	case "json":
 		json, err := json.MarshalIndent(combinedResultMap, "", "  ")
 
@@ -108,5 +112,5 @@ func processFile(path string, params LinterParams) (string, error) {
 	case "md":
 		return markdown(&combinedResultMap)
 	}
-	return "", errors.New(fmt.Sprintf("unsupported output format %s", params.Output))
+	return "", errors.New(fmt.Sprintf("unsupported output format %s", output))
 }
