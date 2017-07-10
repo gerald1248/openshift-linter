@@ -41,16 +41,24 @@ Commands:
 
 The main use cases are:
 
-* Command line: this use case assumes you already have a bunch of configuration objects (e.g. the output of `oc export dc --all-namespaces --raw`)
+* Command line: create report based on OpenShift configuration objects
 * Server: you wish to generate reports by posting JSON configuration files to the server at the URL shown
 * GUI: point your browser to the URL shown and fetch current configuration data from the master
 
 ### Command line use
+As part of an automation pipeline, use:
+```
+$ oc export dc,bc,route --raw -o json|openshift-linter
+```
+The `--raw` flag ensures that `namespace` information is available.
+
+If the configuration objects are available as files, enter:
 ```
 $ ./openshift-linter i-contain-multitudes.yaml
 ```
+In this case, both JSON and YAML can be provided.
 
-On the command line, the sample configuration `data/sample-mix.min.json` produces the following markdown output (excerpt):
+The sample configuration `data/sample-mix.min.json`, for example, produces the following markdown output (excerpt):
 
 ```markdown
 image pull policy
