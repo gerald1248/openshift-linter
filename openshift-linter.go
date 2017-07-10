@@ -50,11 +50,9 @@ func main() {
 
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
-			return
+			os.Exit(1)
 		}
-
-		fmt.Println(buffer)
-		return
+		os.Exit(len(buffer))
 	}
 
 	//use case [B]: server
@@ -81,8 +79,9 @@ func main() {
 
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s: %v (%.2fs)\n", arg, err, secs)
-			return
+			os.Exit(1)
 		}
 		fmt.Println(buffer)
+		os.Exit(len(buffer))
 	}
 }
