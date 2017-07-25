@@ -28,7 +28,7 @@ if (platform === "linux") {
 var arch = os.arch()
 var race = false;
 var raceSwitch = (race) ? " -race" : "";
-var fromScratch = true;
+var fromScratch = false;
 var fromScratchSwitchPre = (fromScratch) ? "CGO_ENABLED=0 GOOS=linux " : "";
 var fromScratchSwitchPost = (fromScratch) ? " -a -installsuffix cgo" : "";
 
