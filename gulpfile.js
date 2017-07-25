@@ -28,6 +28,9 @@ if (platform === "linux") {
 var arch = os.arch()
 var race = false;
 var raceSwitch = (race) ? " -race" : "";
+var fromScratch = true;
+var fromScratchSwitchPre = (fromScratch) ? "CGO_ENABLED=0 GOOS=linux " : "";
+var fromScratchSwitchPost = (fromScratch) ? " -a -installsuffix cgo" : "";
 
 gulp.task('default', ['build', 'watch']);
 
@@ -80,7 +83,7 @@ gulp.task('build-html', function() {
 });
 
 gulp.task('build-go', function(callback) {
-  exec('go build' + raceSwitch, function(err, stdout, stderr) {
+  exec(fromScratchSwitchPre + 'go build' + raceSwitch + fromScratchSwitchPost, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);

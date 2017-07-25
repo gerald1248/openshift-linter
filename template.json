@@ -1,0 +1,199 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "openshift-linter",
+    "annotations": {
+      "iconClass": "icon-go-gopher",
+      "description": "OpenShift Linter template",
+      "tags": ""
+    }
+  },
+  "labels": {
+    "application": "openshift-linter",
+    "createdBy": "template-openshift-linter"
+  },
+  "parameters": [
+    {
+      "description": "The name for the application.",
+      "name": "APPLICATION_NAME",
+      "value": "openshift-linter",
+      "required": true
+    },
+    {
+      "description": "Short name for the application.",
+      "name": "SHORT_APPLICATION_NAME",
+      "value": "osl",
+      "required": true
+    },
+    {
+      "description": "URI of Docker image to be run.",
+      "name": "IMAGE_URI",
+      "value": "gerald1248/openshift-linter",
+      "required": true
+    },
+    {
+      "description": "Tag of Docker image to be run.",
+      "name": "IMAGE_TAG",
+      "value": "v0.1.0",
+      "required": true
+    },
+    {
+      "description": "Custom hostname for service routes.  Leave blank for default hostname, e.g.: <application-name>.<project>.<default-domain-suffix>",
+      "name": "APPLICATION_HOSTNAME"
+    }
+  ],
+  "objects": [
+    {
+      "kind": "ImageStream",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APPLICATION_NAME}"
+      },
+      "spec": {
+        "name": "${IMAGE_TAG}",
+        "annotations": {
+          "openshift.io/imported-from": "${IMAGE_URI}"
+        },
+        "from": {
+          "kind": "DockerImage",
+          "name": "${IMAGE_URI}"
+        }
+      }
+    },
+    {
+      "kind": "DeploymentConfig",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APPLICATION_NAME}",
+        "labels": {
+          "deploymentConfig": "${APPLICATION_NAME}"
+        }
+      },
+      "spec": {
+        "strategy": {
+          "type": "Rolling"
+        },
+        "triggers": [
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "automatic": true,
+              "containerNames": [
+                "${APPLICATION_NAME}"
+              ],
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "${APPLICATION_NAME}:${IMAGE_TAG}"
+              }
+            }
+          },
+          {
+            "type": "ConfigChange"
+          }
+        ],
+        "replicas": 1,
+        "selector": {
+          "deploymentConfig": "${APPLICATION_NAME}"
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "deploymentConfig": "${APPLICATION_NAME}"
+            }
+          },
+          "spec": {
+            "volumes": [
+              {
+                "name": "config-volume",
+                "configMap": {
+                  "name": "${APPLICATION_NAME}",
+                  "defaultMode": 420
+                }
+              }
+            ],
+            "containers": [
+              {
+                "name": "${APPLICATION_NAME}",
+                "image": "${IMAGE_URI}",
+                "ports": [
+                  {
+                    "name": "${SHORT_APPLICATION_NAME}-https",
+                    "containerPort": 8443,
+                    "protocol": "TCP"
+                  }
+                ],
+                "volumeMounts": [
+                  {
+                    "name": "config-volume",
+                    "mountPath": "/etc/config"
+                  }
+                ],
+                "resources": {},
+                "env": [
+                ],
+                "terminationMessagePath": "/dev/termination-log",
+                "imagePullPolicy": "IfNotPresent",
+                "securityContext": {
+                  "capabilities": {},
+                  "privileged": false
+                }
+              }
+            ],
+            "restartPolicy": "Always",
+            "dnsPolicy": "ClusterFirst"
+          }
+        }
+      }
+    },
+    {
+      "kind": "Route",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APPLICATION_NAME}",
+        "annotations": {
+          "description": "Route for application's HTTP service"
+        }
+      },
+      "spec": {
+        "host": "${APPLICATION_HOSTNAME}",
+        "to": {
+          "kind": "Service",
+          "name": "${APPLICATION_NAME}"
+        }
+      }
+    },
+    {
+      "kind": "Service",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APPLICATION_NAME}",
+        "annotations": {
+          "description": "The web server's HTTP port"
+        }
+      },
+      "spec": {
+        "ports": [
+          {
+            "protocol": "TCP",
+            "port": 8443,
+            "targetPort": 8443
+          }
+        ],
+        "selector": {
+          "deploymentConfig": "${APPLICATION_NAME}"
+        }
+      }
+    },
+    {
+      "kind": "ConfigMap",
+      "apiVersion": "v1",
+      "metadata": {
+        "name": "${APPLICATION_NAME}"
+      },
+      "data": {
+        "app": "${APPLICATION_NAME}"
+      }
+    }
+  ]
+}
