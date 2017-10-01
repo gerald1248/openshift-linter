@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/tls"
+	"crypto/x509"
 	"encoding/json"
 	"fmt"
 	"github.com/elazarl/go-bindata-assetfs"
@@ -40,6 +41,10 @@ func serve(certificate, key, hostname string, port int) {
 			log.Fatal("Can't create key pair")
 		}
 
+		//supply root certs in case code is run in from-scratch image
+		pool := x509.NewCertPool()
+		pool.AppendCertsFromPEM(rootCerts)
+
 		var certificates []tls.Certificate
 		certificates = append(certificates, keyPair)
 
@@ -47,6 +52,7 @@ func serve(certificate, key, hostname string, port int) {
 			MinVersion:               tls.VersionTLS12,
 			PreferServerCipherSuites: true,
 			Certificates:             certificates,
+			RootCAs:                  pool,
 		}
 
 		s := &http.Server{
