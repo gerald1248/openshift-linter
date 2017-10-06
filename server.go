@@ -29,6 +29,13 @@ func serve(certificate, key, hostname string, port int) {
 	mux.HandleFunc("/openshift-linter/report", guiHandler)
 	mux.HandleFunc("/openshift-linter", handler)
 
+	// exception: no TLS req'd
+	if port%2 == 0 {
+		fmt.Print(listening(hostname, port, false))
+		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", hostname, port), mux))
+		return
+	}
+
 	err := httpscerts.Check(certificate, key)
 	if err != nil {
 		cert, key, err := httpscerts.GenerateArrays(fmt.Sprintf("%s:%d", hostname, port))
@@ -75,9 +82,14 @@ func listening(hostname string, port int, selfCert bool) string {
 	if selfCert {
 		selfCertMsg = " (self-certified)"
 	}
+
+	protocol := "https"
+	if port%2 == 0 {
+		protocol = "http"
+	}
 	return fmt.Sprintf("Listening on port %d%s\n"+
-		"POST JSON sources to https://%s:%d/openshift-linter\n"+
-		"Generate report at https://%s:%d/openshift-linter/report\n", port, selfCertMsg, hostname, port, hostname, port)
+		"POST JSON sources to %s://%s:%d/openshift-linter\n"+
+		"Generate report at %s://%s:%d/openshift-linter/report\n", port, selfCertMsg, protocol, hostname, port, protocol, hostname, port)
 }
 
 func guiHandler(w http.ResponseWriter, r *http.Request) {
