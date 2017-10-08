@@ -28,9 +28,7 @@ if (platform === "linux") {
 var arch = os.arch()
 var race = false;
 var raceSwitch = (race) ? " -race" : "";
-var fromScratch = false;
-var fromScratchSwitchPre = (fromScratch) ? "CGO_ENABLED=0 GOOS=linux " : "";
-var fromScratchSwitchPost = (fromScratch) ? " -a -installsuffix cgo" : "";
+var xbuildtarget = "";
 
 gulp.task('default', ['build', 'watch']);
 
@@ -113,12 +111,15 @@ gulp.task('build-go-win32', function(callback) {
 gulp.task('build-go-linux-x64', function(callback) {
 	platform = "linux"
 	arch = "x64"
-	exec('GOOS=linux GOARCH=amd64 go build' + raceSwitch, function(err, stdout, stderr) {
+	exec('CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo' + raceSwitch, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
   });
 });
+var fromScratch = true;
+var fromScratchSwitchPre = (fromScratch) ? "CGO_ENABLED=0 " : "";
+var fromScratchSwitchPost = (fromScratch) ? " -a -installsuffix cgo" : "";
 
 gulp.task('package-binary', function() {
   return gulp.src(['./openshift-linter', './openshift-linter.exe'], { base: '.' })
@@ -187,42 +188,27 @@ gulp.task('build-bindata', function(callback) {
 });
 
 gulp.task('build-win32', function(callback) {
+  xbuildtarget = 'win32';
   runSequence(
-		//skip clean-build to retain dist
-    'fmt',
-    'vet',
-    'build-js',
-    'build-css',
-    'build-html',
-    'build-bindata',
-    'build-go-win32',
-    'clean-package',
-    'package-binary',
-    'dist',
-    'clean-home',
-		//skip tests as binary won't run
+    'build-any',
     callback);
 });
-		
+
 gulp.task('build-linux', function(callback) {
+  xbuildtarget = 'linux-x64';
   runSequence(
-		//skip clean-build to retain dist
-    'fmt',
-    'vet',
-    'build-js',
-    'build-css',
-    'build-html',
-    'build-bindata',
-    'build-go-linux-x64',
-    'clean-package',
-    'package-binary',
-    'dist',
-    'clean-home',
-		//skip tests as binary won't run
+    'build-any',
     callback);
 });
-		
+
 gulp.task('build-darwin', function(callback) {
+  xbuildtarget = 'darwin';
+  runSequence(
+    'build-any',
+    callback);
+});		
+
+gulp.task('build-any', function(callback) {
   runSequence(
 		//skip clean-build to retain dist
     'fmt',
@@ -231,12 +217,12 @@ gulp.task('build-darwin', function(callback) {
     'build-css',
     'build-html',
     'build-bindata',
-    'build-go-darwin',
+    'build-go-' + xbuildtarget,
     'clean-package',
     'package-binary',
     'dist',
     'clean-home',
-		//skip tests as binary won't run
+    'test',
     callback);
 });
 

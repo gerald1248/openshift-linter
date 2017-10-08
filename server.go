@@ -87,6 +87,12 @@ func listening(hostname string, port int, selfCert bool) string {
 	if port%2 == 0 {
 		protocol = "http"
 	}
+
+	// for Docker, mustn't specify localhost explicitly
+	if hostname == "" {
+		hostname = "localhost"
+	}
+
 	return fmt.Sprintf("Listening on port %d%s\n"+
 		"POST JSON sources to %s://%s:%d/openshift-linter\n"+
 		"Generate report at %s://%s:%d/openshift-linter/report\n", port, selfCertMsg, protocol, hostname, port, protocol, hostname, port)
