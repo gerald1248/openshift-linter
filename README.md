@@ -201,7 +201,7 @@ You can also individually cross-compile using the `build-darwin`, `build-linux` 
 
 Docker
 ------
-`openshift-linter` is intended to run on `FROM scratch` Docker containers. To trigger a Linux build, build the image and run it, run:
+`openshift-linter` is intended for Docker images built from scratch. To trigger a Linux build, build the image and run it, enter:
 ```
 $ gulp build-docker
 ```
