@@ -52,6 +52,7 @@ func main() {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
 			os.Exit(1)
 		}
+		fmt.Println(buffer)
 		os.Exit(len(buffer))
 	}
 

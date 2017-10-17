@@ -178,6 +178,7 @@ $ node node_modules/gulp/bin/gulp.js
 Before running `gulp` (which builds and tests the program), fetch and install the Go dependencies (`go get` also runs at build time):
 
 ```
+$ export GOPATH=$HOME/go
 $ go get -u github.com/jteeuwen/go-bindata/...
 $ go get -u
 ```
@@ -197,3 +198,11 @@ To cross-compile Mac, Linux and Windows binaries, enter:
 $ gulp build-all
 ```
 You can also individually cross-compile using the `build-darwin`, `build-linux` and `build-win32` targets.
+
+Docker
+------
+`openshift-linter` is intended to run on `FROM scratch` Docker containers. To trigger a Linux build, build the image and run it, run:
+```
+$ gulp build-docer
+```
+If you'd rather use an existing image, you may wish to run `docker pull gerald1248/openshift-linter:latest`.

@@ -25,6 +25,8 @@ if (platform === "linux") {
     }
   });
 }
+var appName = pkg.name;
+var appVersion = pkg.version;
 var arch = os.arch()
 var race = false;
 var raceSwitch = (race) ? " -race" : "";
@@ -33,19 +35,9 @@ var xbuildtarget = "";
 gulp.task('default', ['build', 'watch']);
 
 gulp.task('build', function(callback) {
+  xbuildtarget = 'default';
   runSequence(
-    'clean-build',
-    'fmt',
-    'vet',
-    'build-js',
-    'build-css',
-    'build-html',
-    'build-bindata',
-    'build-go',
-    'package-binary',
-    'dist',
-    'clean-home',
-    'test',
+    'build-any',
     callback);
 });
 
@@ -88,10 +80,18 @@ gulp.task('build-go', function(callback) {
   });
 });
 
+gulp.task('build-go-default', function(callback) {
+  exec('go build' + raceSwitch, function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    callback(err);
+  });
+});
+
 gulp.task('build-go-darwin', function(callback) {
 	platform = "darwin"
 	arch = "amd64"
-	exec('GOOS=darwin GOARCH=amd64 go build' + raceSwitch, function(err, stdout, stderr) {
+	exec('GOOS=darwin GOARCH=' + arch + ' go build' + raceSwitch, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
@@ -101,7 +101,7 @@ gulp.task('build-go-darwin', function(callback) {
 gulp.task('build-go-win32', function(callback) {
 	platform = "win32"
 	arch = "386"
-	exec('GOOS=windows GOARCH=386 go build' + raceSwitch, function(err, stdout, stderr) {
+	exec('GOOS=windows GOARCH=' + arch + ' go build' + raceSwitch, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
@@ -110,16 +110,13 @@ gulp.task('build-go-win32', function(callback) {
 
 gulp.task('build-go-linux-x64', function(callback) {
 	platform = "linux"
-	arch = "x64"
-	exec('CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo' + raceSwitch, function(err, stdout, stderr) {
+	arch = "amd64"
+	exec('CGO_ENABLED=0 GOOS=linux GOARCH=' + arch + ' go build -a -installsuffix cgo' + raceSwitch, function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
   });
 });
-var fromScratch = true;
-var fromScratchSwitchPre = (fromScratch) ? "CGO_ENABLED=0 " : "";
-var fromScratchSwitchPost = (fromScratch) ? " -a -installsuffix cgo" : "";
 
 gulp.task('package-binary', function() {
   return gulp.src(['./openshift-linter', './openshift-linter.exe'], { base: '.' })
@@ -128,13 +125,13 @@ gulp.task('package-binary', function() {
 
 gulp.task('dist', function() {
   return gulp.src('./package/**/*', { base: './package' })
-    .pipe(zip(pkg.name + '-' + pkg.version + '-' + platform + '-' + arch + '.zip'))
+    .pipe(zip(appName + '-' + appVersion + '-' + platform + '-' + arch + '.zip'))
     .pipe(md5())
     .pipe(gulp.dest('./dist'));
 });
 
 gulp.task('test', function(callback) {
-  exec('go test', function(err, stdout, stderr) {
+  exec('go test -v', function(err, stdout, stderr) {
     console.log(stdout);
     console.log(stderr);
     callback(err);
@@ -168,8 +165,8 @@ gulp.task('clean-home', function() {
 
 gulp.task('clean-build', function() {
   return del.sync([
-    './dist/' + pkg.name + '-*-' + platform + '_*.zip',
-    './dist/' + pkg.name + '-*-' + platform + '-' + arch + '_*.zip',
+    './dist/' + appName + '-*-' + platform + '_*.zip',
+    './dist/' + appName + '-*-' + platform + '-' + arch + '_*.zip',
     './package/**/*',
     './static/*.json'
   ], { force: true });
@@ -206,7 +203,7 @@ gulp.task('build-darwin', function(callback) {
   runSequence(
     'build-any',
     callback);
-});		
+});
 
 gulp.task('build-any', function(callback) {
   runSequence(
@@ -224,6 +221,47 @@ gulp.task('build-any', function(callback) {
     'clean-home',
     'test',
     callback);
+});
+
+gulp.task('build-docker', function(callback) {
+  runSequence(
+    'build-linux',
+    'build-image',
+    'run-image',
+    callback
+  );
+});
+
+gulp.task('build-image', function(callback) {
+    exec(
+      'docker build -t ' +
+      appName +
+      ':v' +
+      appVersion +
+      ' .' +
+      ' && echo \"Run as follows:\n$ docker run --read-only -p 8443:8443 -t ' +
+      appName +
+      ':v' +
+      appVersion +
+      '\"', function(err, stdout, stderr) {
+      console.log(stdout);
+      console.log(stderr);
+      callback(err);
+    });
+});
+
+gulp.task('run-image', function(callback) {
+  exec(
+    'docker run --read-only -p 8443:8443 -t ' +
+    appName +
+    ':v' +
+    appVersion +
+    ' --help',
+    function(err, stdout, stderr) {
+    console.log(stdout);
+    console.log(stderr);
+    callback(err);
+  })
 });
 
 gulp.task('watch', function() {
