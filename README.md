@@ -203,6 +203,6 @@ Docker
 ------
 `openshift-linter` is intended to run on `FROM scratch` Docker containers. To trigger a Linux build, build the image and run it, run:
 ```
-$ gulp build-docer
+$ gulp build-docker
 ```
 If you'd rather use an existing image, you may wish to run `docker pull gerald1248/openshift-linter:latest`.
