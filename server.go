@@ -90,7 +90,7 @@ func listening(hostname string, port int, selfCert bool) string {
 
 	// for Docker, mustn't specify localhost explicitly
 	if hostname == "" {
-		hostname = "localhost"
+		hostname = "0.0.0.0"
 	}
 
 	return fmt.Sprintf("Listening on port %d%s\n"+
