@@ -7,6 +7,13 @@ This is a utility for OpenShift users/admins who want to know if certain rules h
 
 **Fig. 1** OpenShift Linter GUI
 
+One-liner usage
+---------------
+If you're unsure if this tool is for you, switch to a busy project using `oc` and enter:
+```
+$ oc export dc --raw -o json >dc.json && docker run --rm -v `pwd`:/pwd -t gerald1248/openshift-linter:latest /pwd/dc.json
+```
+
 Usage
 -----
 ```
