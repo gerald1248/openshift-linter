@@ -7,7 +7,7 @@ This is a utility for OpenShift users/admins who want to know if certain rules h
 
 **Fig. 1** OpenShift Linter GUI
 
-One-liner usage
+Quick usage
 ---------------
 If you're unsure if this tool is for you, switch to a busy project using `oc` and enter:
 ```
