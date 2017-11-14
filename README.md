@@ -49,13 +49,13 @@ Commands:
 The main use cases are:
 
 * Command line: create report based on OpenShift configuration objects
-* Server: you wish to generate reports by posting JSON configuration files to the server at the URL shown
+* Server: you wish to generate reports by posting configuration files to the server at the URL shown
 * GUI: point your browser to the URL shown and fetch current configuration data from the master
 
 ### Command line use
 As part of an automation pipeline, use:
 ```
-$ oc export dc,bc,route --raw -o json|openshift-linter
+$ oc export dc,bc,route --raw | openshift-linter
 ```
 The `--raw` flag ensures that `namespace` information is available.
 
@@ -63,7 +63,7 @@ If the configuration objects are available as files, enter:
 ```
 $ ./openshift-linter i-contain-multitudes.yaml
 ```
-In this case, both JSON and YAML can be provided.
+Both JSON and YAML can be provided.
 
 The sample configuration `data/sample-mix.min.json`, for example, produces the following markdown output (excerpt):
 
@@ -103,7 +103,7 @@ Listening on port 8443
 POST JSON sources to https://localhost:8443/openshift-linter
 Generate report at https://localhost:8443/openshift-linter/report
 ```
-Note that all inputs and outputs in server mode are JSON only. You can supply parameters by adding `customNamespaceLabel`, `customNamespacePattern`, `customNamePattern`, `customContainerPattern`, `customEnvPattern` properties to the JSON object passed to the server.
+You can supply parameters by adding `customNamespaceLabel`, `customNamespacePattern`, `customNamePattern`, `customContainerPattern`, `customEnvPattern` properties to the JSON object passed to the server.
 
 ### GUI use
 Open the URL shown in your browser to fetch configuration data from your OpenShift master. If you've already created a report, you can sideload and create the browser view with charts that way. You can supply the parameters usually specified on the command line in the Settings pane.
@@ -139,8 +139,6 @@ src
             ├── LICENSE
             ├── README.md
             ├── bindata.go
-            ├── bower.json
-            ├── bower_components
             ├── contributors.txt
             ├── data
             ├── gulpfile.js
