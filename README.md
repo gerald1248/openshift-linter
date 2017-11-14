@@ -11,7 +11,7 @@ Quick usage
 ---------------
 If you're unsure if this tool is for you, switch to a busy project using `oc` and enter:
 ```
-$ oc export dc --raw -o json >dc.json && docker run --rm -v `pwd`:/pwd -t gerald1248/openshift-linter:latest /pwd/dc.json
+$ oc export dc --raw | docker run --rm -i gerald1248/openshift-linter:latest
 ```
 
 Usage
@@ -57,7 +57,7 @@ As part of an automation pipeline, use:
 ```
 $ oc export dc,bc,route --raw | openshift-linter
 ```
-The `--raw` flag ensures that `namespace` information is available.
+The `--raw` flag ensures that `namespace` information is present.
 
 If the configuration objects are available as files, enter:
 ```
@@ -161,7 +161,7 @@ src
             └── types_test.go
 ```
 
-Next, install Node.js with npm using your package manager. `cd` into the working directory `openshift-linter` and enter:
+Next, install Node.js using your package manager. `cd` into the working directory `openshift-linter` and enter:
 
 ```
 $ sudo npm install -g gulp-cli
@@ -210,4 +210,4 @@ Docker
 ```
 $ gulp build-docker
 ```
-If you'd rather use an existing image, you may wish to run `docker pull gerald1248/openshift-linter:latest`.
+If you'd rather use an existing image, you may wish to run `docker pull gerald1248/openshift-linter`.
