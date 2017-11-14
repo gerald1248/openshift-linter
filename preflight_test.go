@@ -7,7 +7,6 @@ import (
 func TestPreflightAsset(t *testing.T) {
 	//byte slices
 	invalidUtf8 := []byte{0xff, 0xfe, 0xfd}
-	//xmlMarkup := []byte("<?xml version='1.0' encoding='UTF-8' standalone='yes'?><root/>")
 	validJson := []byte("{ \"foo\": [\"bar\", \"barfoo\"] }")
 	invalidJson := []byte("{ \"foo\": [\"bar\", \"barfoo\"] } foo")
 	validYaml := []byte("\"foo\": \"bar\"")
@@ -35,13 +34,6 @@ func TestPreflightAsset(t *testing.T) {
 	if err == nil {
 		t.Error("Must reject invalid YAML")
 	}
-
-  /*
-	err = preflightAsset(&xmlMarkup)
-	if err == nil {
-		t.Error("Must reject XML markup")
-	}
-  */
 
 	//expect success
 	err = preflightAsset(&validYaml)
