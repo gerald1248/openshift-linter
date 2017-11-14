@@ -9,15 +9,22 @@ import (
 )
 
 func processBytes(bytes []byte, params LinterParams) (CombinedResultMap, error) {
+
+	//preflight with optional conversion from YAMLs
+	err := preflightAsset(&bytes)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("input failed preflight check: %v", err))
+	}
+
 	//make sure config objects are presented as a list
-	err := makeList(&bytes)
+	err = makeList(&bytes)
 	if err != nil {
 		return nil, err
 	}
 
 	var config Config
 
-	if err := json.Unmarshal(bytes, &config); err != nil {
+	if err = json.Unmarshal(bytes, &config); err != nil {
 		return nil, errors.New(fmt.Sprintf("can't unmarshal data: %v", err))
 	}
 
@@ -74,12 +81,6 @@ func processFile(path string, params LinterParams) (string, error) {
 	bytes, err := ioutil.ReadFile(path)
 	if err != nil {
 		return "", errors.New(fmt.Sprintf("can't read %s: %v", path, err))
-	}
-
-	//preflight with optional conversion from YAMLs
-	err = preflightAsset(&bytes, path)
-	if err != nil {
-		return "", errors.New(fmt.Sprintf("%s failed preflight check: %v", path, err))
 	}
 
 	combinedResultMap, err := processBytes(bytes, params)

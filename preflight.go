@@ -5,13 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ghodss/yaml"
-	"regexp"
 	"unicode/utf8"
 )
 
 // ensure YAML as well as JSON can be read
 // applies only to file-based processing; the server only accepts JSON
-func preflightAsset(a *[]byte, file string) error {
+func preflightAsset(a *[]byte) error {
 	if len(*a) == 0 {
 		return errors.New("input must not be empty")
 	}
@@ -20,25 +19,25 @@ func preflightAsset(a *[]byte, file string) error {
 		return errors.New("input must be valid UTF-8")
 	}
 
-	//if extension indicates YAML, attempt conversion
-	//(otherwise assume JSON)
-	re := regexp.MustCompile("(?i)\\.ya?ml$")
-	isYaml := re.FindStringIndex(file) != nil
-
-	if isYaml {
-		json, err := yaml.YAMLToJSON(*a)
-		if err != nil {
-			return errors.New(fmt.Sprintf("invalid YAML: %v", err))
-		}
-		*a = json
-	}
-
-	//now parse the JSON
+	// attempt to parse JSON first
 	var any interface{}
 	err := json.Unmarshal(*a, &any)
-	if err != nil {
-		return errors.New(fmt.Sprintf("invalid JSON: %v", err))
+
+	// input is valid JSON
+	if err == nil {
+		return nil
 	}
+
+	jsonError := err
+
+	// not JSON
+	json, err := yaml.YAMLToJSON(*a)
+	if err != nil {
+		return errors.New(fmt.Sprintf("invalid JSON: %v; invalid YAML: %v", jsonError, err))
+	}
+
+	// successful conversion
+	*a = json
 
 	return nil
 }
